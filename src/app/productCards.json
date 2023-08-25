@@ -1,0 +1,50 @@
+[
+  {
+    "title": "Top Deal",
+    "image": "/carousel/1.jpg",
+    "linkText": "See all deals",
+    "linkUrl": "https://www.amazon.com/product1"
+  },
+  {
+    "title": "Health & Personal Care",
+    "image": "/carousel/1.jpg",
+    "linkText": "Shop now",
+    "linkUrl": "https://www.amazon.com/product2"
+  },
+  {
+    "title": "Electronics",
+    "image": "/carousel/1.jpg",
+    "linkText": "See more",
+    "linkUrl": "https://www.amazon.com/product3"
+  },
+  {
+    "title": "Shop school essentials",
+    "image": "/carousel/1.jpg",
+    "linkText": "See more",
+    "linkUrl": "https://www.amazon.com/product3"
+  },
+  {
+    "title": "Home & Kitchen Under $30",
+    "image": "/carousel/1.jpg",
+    "linkText": "Shop now",
+    "linkUrl": "https://www.amazon.com/product3"
+  },
+  {
+    "title": "Toys under $30",
+    "image": "/carousel/1.jpg",
+    "linkText": "Shop now",
+    "linkUrl": "https://www.amazon.com/product3"
+  },
+  {
+    "title": "Shop Deals in Fashion",
+    "image": "/carousel/1.jpg",
+    "linkText": "See all deals",
+    "linkUrl": "https://www.amazon.com/product3"
+  },
+  {
+    "title": "Beauty Picks",
+    "image": "/carousel/1.jpg",
+    "linkText": "Shop now",
+    "linkUrl": "https://www.amazon.com/product3"
+  }
+]

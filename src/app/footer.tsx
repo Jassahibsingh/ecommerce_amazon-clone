@@ -1,13 +1,21 @@
+"use client";
 import Divider from "@mui/material/Divider";
-import React from "react";
+import React, { useState } from "react";
 import { FiChevronRight } from "react-icons/fi";
 import { CiGlobe } from "react-icons/ci";
 import { RiExpandUpDownFill } from "react-icons/ri";
 
 const Footer: React.FC = () => {
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
   return (
-    <footer className="flex flex-col justify-center text-white py-6 w-full">
-      <div className="flex justify-center bg-[#374758] hover:bg-[#3c5066] cursor-pointer text-xs py-4">
+    <footer className="flex flex-col justify-center text-white w-full">
+      <div
+        className="flex justify-center bg-[#374758] hover:bg-[#3c5066] cursor-pointer text-xs py-4"
+        onClick={scrollToTop}
+      >
         Back to top
       </div>
       <div className="flex flex-col py-10 bg-[#232f3d] w-full">
@@ -148,10 +156,10 @@ const Footer: React.FC = () => {
             </div>
           </div>
         </div>
-      </div>
-      <div className="mt-8 border-t border-gray-300 bg-[#131a21] pt-6 text-sm text-center">
-        © {new Date().getFullYear()} Your E-Commerce | Built with Next.js and
-        Tailwind CSS
+        <div className="mt-8 text-sm text-center">
+          © {new Date().getFullYear()} Amazon by Jassahib | Built with Next.js
+          and Tailwind CSS
+        </div>
       </div>
     </footer>
   );

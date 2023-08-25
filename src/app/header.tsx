@@ -1,10 +1,28 @@
+"use client";
 import React from "react";
 import Tooltip from "@mui/material/Tooltip";
 import { AiOutlineSearch, AiFillCaretDown } from "react-icons/ai";
 import { FiMapPin, FiShoppingCart, FiMenu } from "react-icons/fi";
+import { Popper, createTheme } from "@mui/material";
 
 const Header: React.FC = () => {
-  const langMenu: Array<any> = ["English", "Hindi"];
+  const CustomTooltipContent = () => {
+    return (
+      <div className=" w-20">
+        <p>This is a custom tooltip content.</p>
+        <button>Click Me</button>
+      </div>
+    );
+  };
+  const CustomPopper = (props: any) => {
+    return (
+      <Popper {...props} placement="top-start">
+        <div className="bg-white">
+          <CustomTooltipContent />
+        </div>
+      </Popper>
+    );
+  };
   return (
     <header className="flex flex-col bg-[#131920] w-full">
       <div className="flex items-center">
@@ -31,7 +49,11 @@ const Header: React.FC = () => {
           </button>
         </div>
         <div className="flex items-center ml-auto space-x-2 w-[25rem]">
-          <Tooltip title={langMenu} arrow sx={{ backgroundColor: "white" }}>
+          <Tooltip
+            title={<CustomTooltipContent />}
+            arrow
+            PopperComponent={CustomPopper}
+          >
             <div className="flex items-center px-2 py-4 text-white cursor-pointer text-sm w-[5rem] hover:outline outline-1">
               <img
                 className="w-5 object-contain cursor-pointer"
