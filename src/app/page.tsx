@@ -65,9 +65,9 @@ function Page() {
             <ProductSlider data={FRID} />
           </div>
           <div className="grid grid-cols-4 gap-5">
-            {prodCards.splice(0, 4).map((e: any) => (
+            {prodCards.map((e, id) => (
               <ProductsCard
-                key={e}
+                key={id}
                 title={e.title}
                 image={e.image}
                 link={e.linkUrl}
@@ -82,9 +82,9 @@ function Page() {
             <ProductSlider data={FRID} />
           </div>
           <div className="grid grid-cols-4 gap-5">
-            {prodCards.splice(0, 4).map((e: any) => (
+            {prodCards.map((e, id) => (
               <ProductsCard
-                key={e}
+                key={id}
                 title={e.title}
                 image={e.image}
                 link={e.linkUrl}
