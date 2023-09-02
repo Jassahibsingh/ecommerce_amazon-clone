@@ -4,6 +4,7 @@ import { GoChevronLeft, GoChevronRight } from "react-icons/go";
 import ProductsCard from "./productsCard";
 import prodCards from "./productCards.json";
 import ProductSlider from "./productSlider";
+import FRID from "./productSlider.json";
 
 function Page() {
   const [imgNo, setImgNo] = useState(1);
@@ -45,7 +46,7 @@ function Page() {
             <GoChevronRight color="black" size={45} />
           </div>
         </div>
-        <div className="flex flex-col justify-center items-center w-full pb-4 bg-gradient-to-b from-transparent via-[#e3e5e1] to-[#e3e5e1]">
+        <div className="flex flex-col justify-center items-center space-y-5 w-full pb-4 bg-gradient-to-b from-transparent via-[#e3e5e1] to-[#e3e5e1]">
           <div className="grid grid-cols-4 gap-5">
             {prodCards.map((e: any) => (
               <ProductsCard
@@ -58,7 +59,47 @@ function Page() {
             ))}
           </div>
           <div>
-            <ProductSlider />
+            <ProductSlider data={FRID} />
+          </div>
+          <div>
+            <ProductSlider data={FRID} />
+          </div>
+          <div className="grid grid-cols-4 gap-5">
+            {prodCards.splice(0, 4).map((e: any) => (
+              <ProductsCard
+                key={e}
+                title={e.title}
+                image={e.image}
+                link={e.linkUrl}
+                linkText={e.linkText}
+              />
+            ))}
+          </div>
+          <div>
+            <ProductSlider data={FRID} />
+          </div>
+          <div>
+            <ProductSlider data={FRID} />
+          </div>
+          <div className="grid grid-cols-4 gap-5">
+            {prodCards.splice(0, 4).map((e: any) => (
+              <ProductsCard
+                key={e}
+                title={e.title}
+                image={e.image}
+                link={e.linkUrl}
+                linkText={e.linkText}
+              />
+            ))}
+          </div>
+          <div>
+            <ProductSlider data={FRID} />
+          </div>
+          <div>
+            <ProductSlider data={FRID} />
+          </div>
+          <div>
+            <ProductSlider data={FRID} />
           </div>
         </div>
       </div>

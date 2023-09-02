@@ -1,6 +1,6 @@
 .scroll::-webkit-scrollbar {
   visibility: hidden;
-  height: 2vh;
+  height: 8px;
 }
 
 .scroll::-webkit-scrollbar:hover {
@@ -12,10 +12,13 @@
 }
 
 .scroll::-webkit-scrollbar-thumb {
-  background: #aaa;
+  opacity: 0;
+  background: #aaaa;
   border-radius: 10px;
+  transition: opacity 0.5s ease-in-out 0s;
 }
 
 .scroll::-webkit-scrollbar-thumb:hover {
-  background: #aaaa;
+  background: #aaa;
+  opacity: 1;
 }
