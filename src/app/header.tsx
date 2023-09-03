@@ -3,26 +3,14 @@ import React from "react";
 import Tooltip from "@mui/material/Tooltip";
 import { AiOutlineSearch, AiFillCaretDown } from "react-icons/ai";
 import { FiMapPin, FiShoppingCart, FiMenu } from "react-icons/fi";
-import { Popper, createTheme } from "@mui/material";
+import LanguageSelector from "./langugaeSelector";
+import { Backdrop } from "@mui/material";
 
-const Header: React.FC = () => {
-  const CustomTooltipContent = () => {
-    return (
-      <div className=" w-20">
-        <p>This is a custom tooltip content.</p>
-        <button>Click Me</button>
-      </div>
-    );
-  };
-  const CustomPopper = (props: any) => {
-    return (
-      <Popper {...props} placement="top-start">
-        <div className="bg-white">
-          <CustomTooltipContent />
-        </div>
-      </Popper>
-    );
-  };
+interface headerProps {
+  setBackdropOpen: (value: boolean) => void;
+}
+
+const Header = ({ setBackdropOpen }: headerProps) => {
   return (
     <header className="flex flex-col bg-[#131920] w-full">
       <div className="flex items-center">
@@ -50,9 +38,11 @@ const Header: React.FC = () => {
         </div>
         <div className="flex items-center ml-auto space-x-2 w-[25rem]">
           <Tooltip
-            title={<CustomTooltipContent />}
+            onOpen={() => setBackdropOpen(true)}
+            onClose={() => setBackdropOpen(false)}
+            title={"Language Selection"}
             arrow
-            PopperComponent={CustomPopper}
+            PopperComponent={LanguageSelector}
           >
             <div className="flex items-center px-2 py-4 text-white cursor-pointer text-sm w-[5rem] hover:outline outline-1">
               <img

@@ -1,8 +1,11 @@
+"use client";
 import "./globals.css";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import Header from "./header";
 import Footer from "./footer";
+import { Backdrop } from "@mui/material";
+import { useState } from "react";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -16,14 +19,20 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const [isBackdropOpen, setBackdropOpen] = useState(false);
   return (
     <html lang="en">
       <body className={inter.className}>
+        {/* <Backdrop
+          sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+          open={isBackdropOpen}
+        > */}
         <div className="bg-gray-100 min-h-screen">
-          <Header />
+          <Header setBackdropOpen={setBackdropOpen} />
           {children}
           <Footer />
         </div>
+        {/* </Backdrop> */}
       </body>
     </html>
   );
