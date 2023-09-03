@@ -1,4 +1,4 @@
-"use client";
+// "use client";
 import "./globals.css";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
@@ -19,7 +19,7 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const [isBackdropOpen, setBackdropOpen] = useState(false);
+  // const [isBackdropOpen, setBackdropOpen] = useState(false);
   return (
     <html lang="en">
       <body className={inter.className}>
@@ -28,7 +28,7 @@ export default function RootLayout({
           open={isBackdropOpen}
         > */}
         <div className="bg-gray-100 min-h-screen">
-          <Header setBackdropOpen={setBackdropOpen} />
+          <Header />
           {children}
           <Footer />
         </div>
