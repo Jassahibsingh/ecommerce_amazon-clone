@@ -34,7 +34,7 @@ function ProductSlider({ data }: ProductSliderProps) {
       <div className="font-bold text-xl mb-2">{data.title}</div>
       <div className="flex items-center w-full">
         <div
-          className="flex items-center justify-center z-10 rounded bg-white shadow-left w-14 h-24 cursor-pointer"
+          className="flex items-center justify-center  rounded bg-white shadow-left w-14 h-24 cursor-pointer"
           onClick={() => slide(-1000)}
         >
           <GoChevronLeft color="#555" size={45} />

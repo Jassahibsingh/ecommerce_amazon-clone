@@ -1,12 +1,18 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { GoChevronLeft, GoChevronRight } from "react-icons/go";
 import ProductsCard from "./productsCard";
 import prodCards from "./productCards.json";
 import ProductSlider from "./productSlider";
 import FRID from "./productSlider.json";
+import SidebarMenu from "./sidebarMenu";
 
-function Page() {
+interface pageProps {
+  isSidebarOpen: boolean;
+  setSidebarOpen: (value: boolean) => void;
+}
+
+function Page({ isSidebarOpen, setSidebarOpen }: pageProps) {
   const [imgNo, setImgNo] = useState(1);
 
   const nextImg = () => {
@@ -31,6 +37,18 @@ function Page() {
         alt="Carousel"
         className="absolute z-0 h-[600px]"
       />
+      <div
+        className="absolute top-0 left-0 z-30"
+        style={{
+          transform: isSidebarOpen ? "translateX(0)" : "translateX(-100%)",
+          transition: "transform 0.3s ease-in-out",
+        }}
+      >
+        <SidebarMenu
+          isSidebarOpen={isSidebarOpen}
+          setSidebarOpen={setSidebarOpen}
+        />
+      </div>
       <div className="z-10 flex flex-col items-start justify-between w-full">
         <div className="flex items-start justify-between w-full bg-cover bg-left">
           <div
