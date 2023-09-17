@@ -44,7 +44,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <Backdrop
-          sx={{ color: "#fff", zIndex: 20 }}
+          sx={{ color: "#fff", zIndex: isSidebarOpen ? 40 : 20 }}
           open={isBackdropOpen}
           onClick={() => {
             handleBackdrop(false);

@@ -5,7 +5,7 @@ import { FiChevronRight } from "react-icons/fi";
 import { CiGlobe } from "react-icons/ci";
 import { RiExpandUpDownFill } from "react-icons/ri";
 
-const Footer: React.FC = () => {
+function Footer() {
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
@@ -163,6 +163,6 @@ const Footer: React.FC = () => {
       </div>
     </footer>
   );
-};
+}
 
 export default Footer;

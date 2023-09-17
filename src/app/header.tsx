@@ -21,7 +21,7 @@ const Header = ({
 }: headerProps) => {
   return (
     <header className="flex flex-col bg-[#131920] w-full">
-      <div className="flex items-center">
+      <div className="flex items-center z-30">
         <img
           className="w-32 object-contain cursor-pointer hover:outline outline-1"
           src="/amazon-logo.png"
@@ -46,8 +46,8 @@ const Header = ({
         </div>
         <div className="flex items-center ml-auto space-x-2 w-[25rem]">
           <Tooltip
-            // onOpen={() => setBackdropOpen(true)}
-            // onClose={() => setBackdropOpen(false)}
+            onOpen={() => handleBackdrop(true)}
+            onClose={() => handleBackdrop(false)}
             title={"Language Selection"}
             arrow
             PopperComponent={LanguageSelector}
@@ -86,12 +86,11 @@ const Header = ({
           </div>
         </div>
       </div>
-      <div className="flex items-center mx-2 bg-[#232f3e] text-white">
+      <div className="flex items-center mx-2 bg-[#232f3e] text-white z-30">
         <div
           className="flex items-center p-2 text-white cursor-pointer text-sm hover:outline outline-1"
           onClick={() => {
             setSidebarOpen(true);
-            handleBackdrop(!isBackdropOpen);
           }}
         >
           <FiMenu size={20} />

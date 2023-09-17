@@ -31,14 +31,14 @@ function Page({ isSidebarOpen, setSidebarOpen }: pageProps) {
   };
 
   return (
-    <div className="flex flex-col items-center select-none">
+    <div className="flex flex-col w-full items-center select-none">
       <img
         src={`/carousel/${imgNo}.jpg`}
         alt="Carousel"
         className="absolute z-0 h-[600px]"
       />
       <div
-        className="absolute top-0 left-0 z-30"
+        className="absolute top-0 left-0 z-40"
         style={{
           transform: isSidebarOpen ? "translateX(0)" : "translateX(-100%)",
           transition: "transform 0.3s ease-in-out",
