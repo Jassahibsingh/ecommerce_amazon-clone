@@ -7,12 +7,12 @@ import ProductSlider from "./productSlider";
 import FRID from "./productSlider.json";
 import SidebarMenu from "./sidebarMenu";
 
-interface pageProps {
+interface PageProps {
   isSidebarOpen: boolean;
   setSidebarOpen: (value: boolean) => void;
 }
 
-function Page({ isSidebarOpen, setSidebarOpen }: pageProps) {
+export default function Page({ isSidebarOpen, setSidebarOpen }: PageProps) {
   const [imgNo, setImgNo] = useState(1);
 
   const nextImg = () => {
@@ -124,5 +124,3 @@ function Page({ isSidebarOpen, setSidebarOpen }: pageProps) {
     </div>
   );
 }
-
-export default Page;
