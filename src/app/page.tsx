@@ -12,7 +12,7 @@ interface PageProps {
   setSidebarOpen: (value: boolean) => void;
 }
 
-export default function Page({ isSidebarOpen, setSidebarOpen }: PageProps) {
+export default function Page(props: PageProps) {
   const [imgNo, setImgNo] = useState(1);
 
   const nextImg = () => {
@@ -40,13 +40,15 @@ export default function Page({ isSidebarOpen, setSidebarOpen }: PageProps) {
       <div
         className="absolute top-0 left-0 z-40"
         style={{
-          transform: isSidebarOpen ? "translateX(0)" : "translateX(-100%)",
+          transform: props.isSidebarOpen
+            ? "translateX(0)"
+            : "translateX(-100%)",
           transition: "transform 0.3s ease-in-out",
         }}
       >
         <SidebarMenu
-          isSidebarOpen={isSidebarOpen}
-          setSidebarOpen={setSidebarOpen}
+          isSidebarOpen={props.isSidebarOpen}
+          setSidebarOpen={props.setSidebarOpen}
         />
       </div>
       <div className="z-10 flex flex-col items-start justify-between w-full">
