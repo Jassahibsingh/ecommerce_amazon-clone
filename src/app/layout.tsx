@@ -59,6 +59,7 @@ export default function RootLayout({
             setSidebarOpen={setSidebarOpen}
           />
           <Page isSidebarOpen={isSidebarOpen} setSidebarOpen={setSidebarOpen} />
+          {children}
           <Footer />
         </div>
       </body>
