@@ -7,8 +7,6 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    // "pre-commit": "next lint",
-    // "pre-push": "next build"
   },
   "dependencies": {
     "@emotion/react": "^11.11.1",
