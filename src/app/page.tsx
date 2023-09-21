@@ -11,7 +11,7 @@ function Page() {
 
   const handleBackdrop = (open: boolean) => {
     setBackdropOpen(open);
-    if (open) {
+    if (open && isSidebarOpen) {
       document.body.style.overflow = "hidden";
     } else {
       document.body.style.overflow = "auto";
@@ -39,7 +39,6 @@ function Page() {
       <div className="bg-gray-100 min-h-screen">
         <Header
           handleBackdrop={handleBackdrop}
-          isBackdropOpen={isBackdropOpen}
           isSidebarOpen={isSidebarOpen}
           setSidebarOpen={setSidebarOpen}
         />

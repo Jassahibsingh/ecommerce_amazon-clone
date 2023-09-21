@@ -7,14 +7,12 @@ import LanguageSelector from "./langugaeSelector";
 import { Backdrop } from "@mui/material";
 
 interface headerProps {
-  isBackdropOpen: boolean;
   handleBackdrop: (value: boolean) => void;
   isSidebarOpen: boolean;
   setSidebarOpen: (value: boolean) => void;
 }
 
 const Header = ({
-  isBackdropOpen,
   handleBackdrop,
   isSidebarOpen,
   setSidebarOpen,
