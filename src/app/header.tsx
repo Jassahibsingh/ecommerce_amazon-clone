@@ -5,6 +5,7 @@ import { AiOutlineSearch, AiFillCaretDown } from "react-icons/ai";
 import { FiMapPin, FiShoppingCart, FiMenu } from "react-icons/fi";
 import LanguageSelector from "./langugaeSelector";
 import { Backdrop } from "@mui/material";
+import AccountsListsPopup from "./accountsListsPopup";
 
 interface headerProps {
   handleBackdrop: (value: boolean) => void;
@@ -60,13 +61,21 @@ const Header = ({
               <AiFillCaretDown color="#656563" size={12} />
             </div>
           </Tooltip>
-          <div className="flex flex-col p-2 text-white cursor-pointer text-xs w-[9rem] hover:outline outline-1">
-            Hello, Sign In
-            <span className="flex items-center text-sm font-bold">
-              Account & Lists
-              <AiFillCaretDown color="#656563" size={12} />
-            </span>
-          </div>
+          <Tooltip
+            onOpen={() => handleBackdrop(true)}
+            onClose={() => handleBackdrop(false)}
+            title={"Accounts & Lists"}
+            arrow
+            PopperComponent={AccountsListsPopup}
+          >
+            <div className="flex flex-col p-2 text-white cursor-pointer text-xs w-[9rem] hover:outline outline-1">
+              Hello, Sign In
+              <span className="flex items-center text-sm font-bold">
+                Account & Lists
+                <AiFillCaretDown color="#656563" size={12} />
+              </span>
+            </div>
+          </Tooltip>
           <div className="flex flex-col p-2 text-white cursor-pointer text-xs w-20 hover:outline outline-1">
             Returns
             <span className="flex items-center text-sm font-bold">
