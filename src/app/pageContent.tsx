@@ -1,6 +1,7 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { GoChevronLeft, GoChevronRight } from "react-icons/go";
+import Slider from "react-slick";
 import ProductsCard from "./productsCard";
 import prodCards from "./productCards.json";
 import ProductSlider from "./productSlider";
@@ -29,6 +30,14 @@ function PageContent({ isSidebarOpen, setSidebarOpen }: PageProps) {
       setImgNo(imgNo - 1);
     }
   };
+  // const settings = {
+  //   dots: true, // Disable dots navigation
+  //   infinite: false,
+  //   // speed: 500,
+  //   // slidesToScroll: 1,
+  //   // slidesToShow: 6,
+  //   // swipeToSlide: true, // Enable swiping to slid
+  // };
   return (
     <div className="flex flex-col w-full items-center select-none">
       <img
@@ -36,6 +45,28 @@ function PageContent({ isSidebarOpen, setSidebarOpen }: PageProps) {
         alt="Carousel"
         className="absolute z-0 h-[600px]"
       />
+      {/* <div className=" w-full bg-green-500">
+        <Slider {...settings}>
+          <div>
+            <img src="/carousel/1.jpg" alt="Carousel" />
+          </div>
+          <div>
+            <img src="/carousel/2.jpg" alt="Carousel" />
+          </div>
+          <div>
+            <img src="/carousel/3.jpg" alt="Carousel" />
+          </div>
+          <div>
+            <img src="/carousel/4.jpg" alt="Carousel" />
+          </div>
+          <div>
+            <img src="/carousel/5.jpg" alt="Carousel" />
+          </div>
+          <div>
+            <img src="/carousel/6.jpg" alt="Carousel" />
+          </div>
+        </Slider>
+      </div> */}
       <div
         className="absolute top-0 left-0 z-40"
         style={{
