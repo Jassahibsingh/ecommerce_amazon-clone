@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import Tooltip from "@mui/material/Tooltip";
 import { AiOutlineSearch, AiFillCaretDown } from "react-icons/ai";
 import { FiMapPin, FiShoppingCart, FiMenu } from "react-icons/fi";
@@ -11,12 +11,14 @@ interface headerProps {
   handleBackdrop: (value: boolean) => void;
   isSidebarOpen: boolean;
   setSidebarOpen: (value: boolean) => void;
+  setLocModalOpen: (value: boolean) => void;
 }
 
 const Header = ({
   handleBackdrop,
   isSidebarOpen,
   setSidebarOpen,
+  setLocModalOpen,
 }: headerProps) => {
   return (
     <header className="flex flex-col bg-[#131920] w-full">
@@ -26,7 +28,10 @@ const Header = ({
           src="/amazon-logo.png"
           alt="Amazon Logo"
         />
-        <div className="flex flex-col items-center p-2 text-white cursor-pointer text-xs w-20 hover:outline outline-1">
+        <div
+          className="flex flex-col items-center p-2 text-white cursor-pointer text-xs w-20 hover:outline outline-1"
+          onClick={() => setLocModalOpen(true)}
+        >
           Deliver to
           <div className="flex items-center text-sm font-bold">
             <FiMapPin size={20} />
@@ -82,11 +87,8 @@ const Header = ({
               & Orders
             </span>
           </div>
-          <div className="flex items-end px-2 py-2.5 text-white cursor-pointer text-sm hover:outline outline-1">
+          <div className="flex items-end relative px-2 py-2.5 text-white cursor-pointer text-sm hover:outline outline-1">
             <div className="flex flex-col items-center">
-              <span className="absolute top-2 right-[4.rem] text-xs font-bold text-[#f08804]">
-                0
-              </span>
               <FiShoppingCart size={30} />
             </div>
             Cart
