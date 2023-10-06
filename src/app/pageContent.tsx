@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { GoChevronLeft, GoChevronRight } from "react-icons/go";
 import Slider from "react-slick";
 import ProductsCard from "./productsCard";
@@ -7,6 +7,10 @@ import prodCards from "./productCards.json";
 import ProductSlider from "./productSlider";
 import FRID from "./productSlider.json";
 import SidebarMenu from "./sidebarMenu";
+import { supabase } from "@/supabase/supabase";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+import Link from "next/link";
 
 interface PageProps {
   isSidebarOpen: boolean;
@@ -14,59 +18,51 @@ interface PageProps {
 }
 
 function PageContent({ isSidebarOpen, setSidebarOpen }: PageProps) {
-  const [imgNo, setImgNo] = useState(1);
+  const [carouselImg, setCarouselImg] = useState<any[]>([]);
+  const sliderRef = useRef<Slider | null>(null);
 
   const nextImg = () => {
-    if (imgNo >= 6) {
-      setImgNo(1);
-    } else {
-      setImgNo(imgNo + 1);
-    }
+    sliderRef.current!.slickNext();
   };
   const prevImg = () => {
-    if (imgNo <= 1) {
-      setImgNo(6);
-    } else {
-      setImgNo(imgNo - 1);
-    }
+    sliderRef.current!.slickPrev();
   };
-  // const settings = {
-  //   dots: true, // Disable dots navigation
-  //   infinite: false,
-  //   // speed: 500,
-  //   // slidesToScroll: 1,
-  //   // slidesToShow: 6,
-  //   // swipeToSlide: true, // Enable swiping to slid
-  // };
+  const settings = {
+    arrows: true,
+    dots: false,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+  };
+
+  async function getCarouselImages() {
+    try {
+      const { data, error } = await supabase.from("carousel").select("*");
+      if (data) {
+        setCarouselImg(data);
+      } else {
+        return error;
+      }
+    } catch (error) {
+      console.log("Error while fetching carousel images", error);
+    }
+  }
+  useEffect(() => {
+    getCarouselImages();
+  }, []);
+
   return (
     <div className="flex flex-col w-full items-center select-none">
-      <img
-        src={`/carousel/${imgNo}.jpg`}
-        alt="Carousel"
-        className="absolute z-0 h-[600px]"
-      />
-      {/* <div className=" w-full bg-green-500">
-        <Slider {...settings}>
-          <div>
-            <img src="/carousel/1.jpg" alt="Carousel" />
-          </div>
-          <div>
-            <img src="/carousel/2.jpg" alt="Carousel" />
-          </div>
-          <div>
-            <img src="/carousel/3.jpg" alt="Carousel" />
-          </div>
-          <div>
-            <img src="/carousel/4.jpg" alt="Carousel" />
-          </div>
-          <div>
-            <img src="/carousel/5.jpg" alt="Carousel" />
-          </div>
-          <div>
-            <img src="/carousel/6.jpg" alt="Carousel" />
-          </div>
+      <div className="w-full overflow-hidden absolute">
+        <Slider {...settings} ref={sliderRef}>
+          {carouselImg.map((e) => (
+            <Link key={e.id} href={"#"}>
+              <img src={e.images} alt={`Carousel image ${e.id}`} />
+            </Link>
+          ))}
         </Slider>
-      </div> */}
+      </div>
       <div
         className="absolute top-0 left-0 z-40"
         style={{

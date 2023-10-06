@@ -1,8 +1,10 @@
-import React, { useRef } from "react";
+"use client";
+import React, { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import "./scrollbar.css";
 import { GoChevronLeft, GoChevronRight } from "react-icons/go";
+import { supabase } from "@/supabase/supabase";
+import "./scrollbar.css";
 
 interface Image {
   src: string;
@@ -15,11 +17,17 @@ interface SliderData {
   images: Image[];
 }
 
+interface ProductArray {
+  id: number;
+  productimage: string;
+}
+
 interface ProductSliderProps {
   data: SliderData;
 }
 
 function ProductSlider({ data }: ProductSliderProps) {
+  const [sliderImages, setSliderImages] = useState<ProductArray[]>([]);
   const ref = useRef<HTMLDivElement | null>(null);
 
   const slide = (slideOffset: number) => {
@@ -28,6 +36,22 @@ function ProductSlider({ data }: ProductSliderProps) {
     }
     console.log(data);
   };
+
+  async function getSliderImages() {
+    try {
+      const { data, error } = await supabase.from("product_slider").select("*");
+      if (data) {
+        console.log(data);
+        setSliderImages(data);
+      }
+      if (error) throw error;
+    } catch (error) {
+      console.log("err", error);
+    }
+  }
+  useEffect(() => {
+    getSliderImages();
+  }, []);
 
   return (
     <div className="flex flex-col bg-white p-5 mx-5">
@@ -43,12 +67,10 @@ function ProductSlider({ data }: ProductSliderProps) {
           ref={ref}
           className="flex items-center w-[1155px] h-[206px] scroll overflow-x-scroll scroll-smooth"
         >
-          {data.images.map((e, id) => (
-            <Link key={id} href={e.url} className="min-w-[300px]">
-              <Image
-                src={e.src}
-                width={600}
-                height={1800}
+          {sliderImages.map((e, id) => (
+            <Link key={id} href={"#"} className="min-w-[300px]">
+              <img
+                src={e.productimage}
                 className="object-contain block"
                 alt={""}
               />
