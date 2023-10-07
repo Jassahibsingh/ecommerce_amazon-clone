@@ -19,6 +19,7 @@ interface PageProps {
 
 function PageContent({ isSidebarOpen, setSidebarOpen }: PageProps) {
   const [carouselImg, setCarouselImg] = useState<any[]>([]);
+  const [productCardInfo, setProductCardInfo] = useState<any[]>([]);
   const sliderRef = useRef<Slider | null>(null);
 
   const nextImg = () => {
@@ -50,7 +51,22 @@ function PageContent({ isSidebarOpen, setSidebarOpen }: PageProps) {
   }
   useEffect(() => {
     getCarouselImages();
+    getproductCardInfo();
   }, []);
+
+  async function getproductCardInfo() {
+    try {
+      const { data, error } = await supabase.from("cards").select("*");
+      if (data) {
+        setProductCardInfo(data);
+        console.log("data", data);
+      } else {
+        return error;
+      }
+    } catch (error) {
+      console.log("Error while fetching carousel images", error);
+    }
+  }
 
   return (
     <div className="flex flex-col w-full items-center select-none">
@@ -92,13 +108,13 @@ function PageContent({ isSidebarOpen, setSidebarOpen }: PageProps) {
         </div>
         <div className="flex flex-col justify-center items-center space-y-5 w-full pb-4 bg-gradient-to-b from-transparent via-[#e3e5e1] to-[#e3e5e1]">
           <div className="grid grid-cols-4 gap-5">
-            {prodCards.map((e: any) => (
+            {productCardInfo.map((e: any) => (
               <ProductsCard
-                key={e}
-                title={e.title}
+                key={e.id}
+                heading={e.heading}
                 image={e.image}
-                link={e.linkUrl}
-                linkText={e.linkText}
+                url={e.url}
+                urlText={e.urltext}
               />
             ))}
           </div>
@@ -109,13 +125,13 @@ function PageContent({ isSidebarOpen, setSidebarOpen }: PageProps) {
             <ProductSlider data={FRID} />
           </div>
           <div className="grid grid-cols-4 gap-5">
-            {prodCards.map((e, id) => (
+            {productCardInfo.map((e: any) => (
               <ProductsCard
-                key={id}
-                title={e.title}
+                key={e.id}
+                heading={e.heading}
                 image={e.image}
-                link={e.linkUrl}
-                linkText={e.linkText}
+                url={e.url}
+                urlText={e.urltext}
               />
             ))}
           </div>
@@ -126,13 +142,13 @@ function PageContent({ isSidebarOpen, setSidebarOpen }: PageProps) {
             <ProductSlider data={FRID} />
           </div>
           <div className="grid grid-cols-4 gap-5">
-            {prodCards.map((e, id) => (
+            {productCardInfo.map((e: any) => (
               <ProductsCard
-                key={id}
-                title={e.title}
+                key={e.id}
+                heading={e.heading}
                 image={e.image}
-                link={e.linkUrl}
-                linkText={e.linkText}
+                url={e.url}
+                urlText={e.urltext}
               />
             ))}
           </div>

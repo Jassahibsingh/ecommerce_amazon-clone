@@ -1,23 +1,23 @@
-import Link from "next/link";
 import React from "react";
+import Link from "next/link";
 
 interface cardInfo {
-  title: string;
+  heading: string;
   image: string;
-  link: string;
-  linkText: string;
+  url: string;
+  urlText: string;
 }
 
-function ProductsCard({ title, image, link, linkText }: cardInfo) {
+function ProductsCard({ heading, image, url, urlText }: cardInfo) {
   return (
-    <div className="w-[19.5rem] h-[25.1rem] bg-white p-5">
-      <div className="font-bold text-xl">{title}</div>
-      <div className="mt-3 mb-4 w-full h-[18rem] bg-red-300 object-contain">
-        <img src={image} className="object-contain" />
+    <div className="w-[19.5rem] h-[26rem] bg-white p-5 overflow-hidden">
+      <div className="font-bold text-xl">{heading}</div>
+      <div className="mt-3 w-full h-[20rem] object-contain">
+        <img src={image} className="object-cover h-[292px]" />
       </div>
       <div className="pb-4 text-xs font-medium">
-        <Link href={link} className="text-[#007185] hover:text-orange-400">
-          {linkText}
+        <Link href={url} className="text-[#007185] hover:text-orange-400">
+          {urlText}
         </Link>
       </div>
     </div>
