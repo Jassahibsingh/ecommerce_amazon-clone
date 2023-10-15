@@ -17,9 +17,17 @@ interface PageProps {
   setSidebarOpen: (value: boolean) => void;
 }
 
+interface SliderArray {
+  id: number;
+  image: string;
+}
+
 function PageContent({ isSidebarOpen, setSidebarOpen }: PageProps) {
   const [carouselImg, setCarouselImg] = useState<any[]>([]);
   const [productCardInfo, setProductCardInfo] = useState<any[]>([]);
+  const [sliderImages, setSliderImages] = useState<SliderArray[]>([]);
+  const [movieSlider, setMovieSlider] = useState<SliderArray[]>([]);
+  const [bookSlider, setBookSlider] = useState<SliderArray[]>([]);
   const sliderRef = useRef<Slider | null>(null);
 
   const nextImg = () => {
@@ -49,17 +57,12 @@ function PageContent({ isSidebarOpen, setSidebarOpen }: PageProps) {
       console.log("Error while fetching carousel images", error);
     }
   }
-  useEffect(() => {
-    getCarouselImages();
-    getproductCardInfo();
-  }, []);
 
   async function getproductCardInfo() {
     try {
       const { data, error } = await supabase.from("cards").select("*");
       if (data) {
         setProductCardInfo(data);
-        console.log("data", data);
       } else {
         return error;
       }
@@ -67,6 +70,51 @@ function PageContent({ isSidebarOpen, setSidebarOpen }: PageProps) {
       console.log("Error while fetching carousel images", error);
     }
   }
+
+  async function getSliderImages() {
+    try {
+      const { data, error } = await supabase.from("product_slider").select("*");
+      if (data) {
+        setSliderImages(data);
+      }
+      if (error) throw error;
+    } catch (error) {
+      console.log("err", error);
+    }
+  }
+
+  async function getMovieSlider() {
+    try {
+      const { data, error } = await supabase.from("movie_slider").select("*");
+      if (data) {
+        setMovieSlider(data);
+      }
+      if (error) throw error;
+    } catch (error) {
+      console.log("err", error);
+    }
+  }
+
+  async function getBookSlider() {
+    try {
+      const { data, error } = await supabase.from("book_slider").select("*");
+      if (data) {
+        console.log("book images", data);
+        setBookSlider(data);
+      }
+      if (error) throw error;
+    } catch (error) {
+      console.log("err", error);
+    }
+  }
+
+  useEffect(() => {
+    getCarouselImages();
+    getproductCardInfo();
+    getSliderImages();
+    getMovieSlider();
+    getBookSlider();
+  }, []);
 
   return (
     <div className="flex flex-col w-full items-center select-none">
@@ -119,10 +167,16 @@ function PageContent({ isSidebarOpen, setSidebarOpen }: PageProps) {
             ))}
           </div>
           <div>
-            <ProductSlider data={FRID} />
+            <ProductSlider
+              header={"Frequently repurchased in Supplies"}
+              sliderArray={sliderImages}
+            />
           </div>
           <div>
-            <ProductSlider data={FRID} />
+            <ProductSlider
+              header="Most wished for in Movies & TV"
+              sliderArray={movieSlider}
+            />
           </div>
           <div className="grid grid-cols-4 gap-5">
             {productCardInfo.map((e: any) => (
@@ -136,11 +190,14 @@ function PageContent({ isSidebarOpen, setSidebarOpen }: PageProps) {
             ))}
           </div>
           <div>
-            <ProductSlider data={FRID} />
+            <ProductSlider
+              header="Best Sellers in Books"
+              sliderArray={bookSlider}
+            />
           </div>
-          <div>
+          {/* <div>
             <ProductSlider data={FRID} />
-          </div>
+          </div> */}
           <div className="grid grid-cols-4 gap-5">
             {productCardInfo.map((e: any) => (
               <ProductsCard
@@ -152,7 +209,7 @@ function PageContent({ isSidebarOpen, setSidebarOpen }: PageProps) {
               />
             ))}
           </div>
-          <div>
+          {/* <div>
             <ProductSlider data={FRID} />
           </div>
           <div>
@@ -160,7 +217,7 @@ function PageContent({ isSidebarOpen, setSidebarOpen }: PageProps) {
           </div>
           <div>
             <ProductSlider data={FRID} />
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

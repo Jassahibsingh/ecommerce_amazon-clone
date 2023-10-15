@@ -6,56 +6,29 @@ import { GoChevronLeft, GoChevronRight } from "react-icons/go";
 import { supabase } from "@/supabase/supabase";
 import "./scrollbar.css";
 
-interface Image {
-  src: string;
-  alt: string;
-  url: string;
-}
-
-interface SliderData {
-  title: string;
-  images: Image[];
-}
-
-interface ProductArray {
+interface SliderArray {
   id: number;
-  productimage: string;
+  image: string;
 }
 
 interface ProductSliderProps {
-  data: SliderData;
+  header: string;
+  sliderArray: SliderArray[];
 }
 
-function ProductSlider({ data }: ProductSliderProps) {
-  const [sliderImages, setSliderImages] = useState<ProductArray[]>([]);
+function ProductSlider({ header, sliderArray }: ProductSliderProps) {
   const ref = useRef<HTMLDivElement | null>(null);
 
   const slide = (slideOffset: number) => {
     if (ref.current) {
       ref.current.scrollLeft += slideOffset;
     }
-    console.log(data);
+    // console.log(data);
   };
-
-  async function getSliderImages() {
-    try {
-      const { data, error } = await supabase.from("product_slider").select("*");
-      if (data) {
-        console.log(data);
-        setSliderImages(data);
-      }
-      if (error) throw error;
-    } catch (error) {
-      console.log("err", error);
-    }
-  }
-  useEffect(() => {
-    getSliderImages();
-  }, []);
 
   return (
     <div className="flex flex-col bg-white p-5 mx-5">
-      <div className="font-bold text-xl mb-2">{data.title}</div>
+      <div className="font-bold text-xl mb-2">{header}</div>
       <div className="flex items-center w-full">
         <div
           className="flex items-center justify-center  rounded bg-white shadow-left w-14 h-24 cursor-pointer"
@@ -67,13 +40,9 @@ function ProductSlider({ data }: ProductSliderProps) {
           ref={ref}
           className="flex items-center w-[1155px] h-[206px] scroll overflow-x-scroll scroll-smooth"
         >
-          {sliderImages.map((e, id) => (
-            <Link key={id} href={"#"} className="min-w-[300px]">
-              <img
-                src={e.productimage}
-                className="object-contain block"
-                alt={""}
-              />
+          {sliderArray.map((e: any) => (
+            <Link key={e.id} href={"#"} className="min-w-[300px]">
+              <img src={e.image} className="object-contain block" alt={""} />
             </Link>
           ))}
         </div>
