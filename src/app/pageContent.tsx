@@ -17,6 +17,14 @@ interface PageProps {
   setSidebarOpen: (value: boolean) => void;
 }
 
+interface productCardsArray {
+  id: number;
+  image: string;
+  heading: string;
+  url: string;
+  urltext: string;
+}
+
 interface SliderArray {
   id: number;
   image: string;
@@ -24,10 +32,19 @@ interface SliderArray {
 
 function PageContent({ isSidebarOpen, setSidebarOpen }: PageProps) {
   const [carouselImg, setCarouselImg] = useState<any[]>([]);
-  const [productCardInfo, setProductCardInfo] = useState<any[]>([]);
+  const [productCardInfo, setProductCardInfo] = useState<productCardsArray[]>(
+    []
+  );
+  const [productCard2Info, setProductCard2Info] = useState<productCardsArray[]>(
+    []
+  );
+  const [productCard3Info, setProductCard3Info] = useState<productCardsArray[]>(
+    []
+  );
   const [sliderImages, setSliderImages] = useState<SliderArray[]>([]);
   const [movieSlider, setMovieSlider] = useState<SliderArray[]>([]);
   const [bookSlider, setBookSlider] = useState<SliderArray[]>([]);
+  const [toySlider, setToySlider] = useState<SliderArray[]>([]);
   const sliderRef = useRef<Slider | null>(null);
 
   const nextImg = () => {
@@ -71,6 +88,32 @@ function PageContent({ isSidebarOpen, setSidebarOpen }: PageProps) {
     }
   }
 
+  async function getproductCard2Info() {
+    try {
+      const { data, error } = await supabase.from("cards2").select("*");
+      if (data) {
+        setProductCard2Info(data);
+      } else {
+        return error;
+      }
+    } catch (error) {
+      console.log("Error while fetching carousel images", error);
+    }
+  }
+
+  async function getproductCard3Info() {
+    try {
+      const { data, error } = await supabase.from("cards3").select("*");
+      if (data) {
+        setProductCard3Info(data);
+      } else {
+        return error;
+      }
+    } catch (error) {
+      console.log("Error while fetching carousel images", error);
+    }
+  }
+
   async function getSliderImages() {
     try {
       const { data, error } = await supabase.from("product_slider").select("*");
@@ -99,8 +142,20 @@ function PageContent({ isSidebarOpen, setSidebarOpen }: PageProps) {
     try {
       const { data, error } = await supabase.from("book_slider").select("*");
       if (data) {
-        console.log("book images", data);
         setBookSlider(data);
+      }
+      if (error) throw error;
+    } catch (error) {
+      console.log("err", error);
+    }
+  }
+
+  async function getToySlider() {
+    try {
+      const { data, error } = await supabase.from("toy_slider").select("*");
+      if (data) {
+        console.log("toys images", data);
+        setToySlider(data);
       }
       if (error) throw error;
     } catch (error) {
@@ -111,9 +166,12 @@ function PageContent({ isSidebarOpen, setSidebarOpen }: PageProps) {
   useEffect(() => {
     getCarouselImages();
     getproductCardInfo();
+    getproductCard2Info();
+    getproductCard3Info();
     getSliderImages();
     getMovieSlider();
     getBookSlider();
+    getToySlider();
   }, []);
 
   return (
@@ -179,7 +237,7 @@ function PageContent({ isSidebarOpen, setSidebarOpen }: PageProps) {
             />
           </div>
           <div className="grid grid-cols-4 gap-5">
-            {productCardInfo.map((e: any) => (
+            {productCard2Info.map((e: any) => (
               <ProductsCard
                 key={e.id}
                 heading={e.heading}
@@ -195,11 +253,8 @@ function PageContent({ isSidebarOpen, setSidebarOpen }: PageProps) {
               sliderArray={bookSlider}
             />
           </div>
-          {/* <div>
-            <ProductSlider data={FRID} />
-          </div> */}
           <div className="grid grid-cols-4 gap-5">
-            {productCardInfo.map((e: any) => (
+            {productCard3Info.map((e: any) => (
               <ProductsCard
                 key={e.id}
                 heading={e.heading}
@@ -209,15 +264,12 @@ function PageContent({ isSidebarOpen, setSidebarOpen }: PageProps) {
               />
             ))}
           </div>
-          {/* <div>
-            <ProductSlider data={FRID} />
-          </div>
           <div>
-            <ProductSlider data={FRID} />
+            <ProductSlider
+              header="Best Sellers in Toys & Games"
+              sliderArray={toySlider}
+            />
           </div>
-          <div>
-            <ProductSlider data={FRID} />
-          </div> */}
         </div>
       </div>
     </div>
