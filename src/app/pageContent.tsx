@@ -1,13 +1,11 @@
 "use client";
 import React, { useEffect, useRef, useState } from "react";
 import { GoChevronLeft, GoChevronRight } from "react-icons/go";
-import Slider from "react-slick";
 import ProductsCard from "./productsCard";
-import prodCards from "./productCards.json";
 import ProductSlider from "./productSlider";
-import FRID from "./productSlider.json";
 import SidebarMenu from "./sidebarMenu";
 import { supabase } from "@/supabase/supabase";
+import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Link from "next/link";
@@ -71,7 +69,7 @@ function PageContent({ isSidebarOpen, setSidebarOpen }: PageProps) {
         return error;
       }
     } catch (error) {
-      console.log("Error while fetching carousel images", error);
+      console.log(error);
     }
   }
 
@@ -84,7 +82,7 @@ function PageContent({ isSidebarOpen, setSidebarOpen }: PageProps) {
         return error;
       }
     } catch (error) {
-      console.log("Error while fetching carousel images", error);
+      console.log(error);
     }
   }
 
@@ -97,7 +95,7 @@ function PageContent({ isSidebarOpen, setSidebarOpen }: PageProps) {
         return error;
       }
     } catch (error) {
-      console.log("Error while fetching carousel images", error);
+      console.log(error);
     }
   }
 
@@ -110,7 +108,7 @@ function PageContent({ isSidebarOpen, setSidebarOpen }: PageProps) {
         return error;
       }
     } catch (error) {
-      console.log("Error while fetching carousel images", error);
+      console.log(error);
     }
   }
 
