@@ -1,4 +1,4 @@
-.scroll::-webkit-scrollbar {
+/* .scroll::-webkit-scrollbar {
   visibility: hidden;
   height: 8px;
 }
@@ -21,4 +21,40 @@
 .scroll::-webkit-scrollbar-thumb:hover {
   background: #aaa;
   opacity: 1;
+} */
+/* This styles the track (the container for the scrollbar) */
+.slick-slider {
+  position: relative;
+  overflow: hidden;
+  background-color: white;
+}
+
+/* This styles the thumb (the draggable part of the scrollbar) */
+.slick-slider .slick-list {
+  position: relative;
+  overflow: hidden;
+}
+
+/* This styles the thumb (the draggable part of the scrollbar) */
+.slick-slider .slick-list .slick-track {
+  margin-right: 0;
+}
+
+/* This styles the thumb (the draggable part of the scrollbar) */
+.slick-slider .slick-list .slick-track::before {
+  content: "";
+  display: block;
+  height: 8px;
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  /* width: 100%; Adjust the width as needed */
+  background: #aaaa;
+  border-radius: 10px;
+  transition: opacity 0.5s ease-in-out 0s; /* Optional: Add transition effect */
+}
+
+/* Change thumb background on hover */
+.slick-slider .slick-list .slick-track::before:hover {
+  background-color: #aaa; /* Change to the desired hover color */
 }
