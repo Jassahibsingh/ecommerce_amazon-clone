@@ -33,7 +33,7 @@ function ProductSlider({ header, sliderArray }: ProductSliderProps) {
     dots: false,
     infinite: false,
     speed: 600,
-    slidesToShow: 5,
+    slidesToShow: 6,
     slidesToScroll: 4,
     swipe: false,
   };

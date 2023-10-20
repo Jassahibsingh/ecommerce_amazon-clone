@@ -3,9 +3,10 @@ import React, { useState } from "react";
 import Tooltip from "@mui/material/Tooltip";
 import { AiOutlineSearch, AiFillCaretDown } from "react-icons/ai";
 import { FiMapPin, FiShoppingCart, FiMenu } from "react-icons/fi";
-import LanguageSelector from "./langugaeSelector";
+import LanguageSelector from "./languageSelector";
 import { Backdrop } from "@mui/material";
 import AccountsListsPopup from "./accountsListsPopup";
+import Link from "next/link";
 
 interface headerProps {
   handleBackdrop: (value: boolean) => void;
@@ -73,13 +74,16 @@ const Header = ({
             arrow
             PopperComponent={AccountsListsPopup}
           >
-            <div className="flex flex-col p-2 text-white cursor-pointer text-xs w-[9rem] hover:outline outline-1">
+            <Link
+              className="flex flex-col p-2 text-white cursor-pointer text-xs w-[9rem] hover:outline outline-1"
+              href="/server/Login"
+            >
               Hello, Sign In
               <span className="flex items-center text-sm font-bold">
                 Account & Lists
                 <AiFillCaretDown color="#656563" size={12} />
               </span>
-            </div>
+            </Link>
           </Tooltip>
           <div className="flex flex-col p-2 text-white cursor-pointer text-xs w-20 hover:outline outline-1">
             Returns

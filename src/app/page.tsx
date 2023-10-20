@@ -5,6 +5,8 @@ import PageContent from "./pageContent";
 import Footer from "./footer";
 import Backdrop from "@mui/material/Backdrop";
 import LocationModal from "./locationModal";
+import Login from "./server/Login";
+import Registration from "./server/Registration";
 
 function Page() {
   const [isBackdropOpen, setBackdropOpen] = useState<boolean>(false);
@@ -55,6 +57,8 @@ function Page() {
         />
         <Footer />
       </div>
+      {/* <Login /> */}
+      {/* <Registration /> */}
     </div>
   );
 }
