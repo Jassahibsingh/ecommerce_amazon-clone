@@ -10,11 +10,6 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Link from "next/link";
 
-interface PageProps {
-  isSidebarOpen: boolean;
-  setSidebarOpen: (value: boolean) => void;
-}
-
 interface productCardsArray {
   id: number;
   image: string;
@@ -28,7 +23,7 @@ interface SliderArray {
   image: string;
 }
 
-function PageContent({ isSidebarOpen, setSidebarOpen }: PageProps) {
+function PageContent() {
   const [carouselImg, setCarouselImg] = useState<any[]>([]);
   const [productCardInfo, setProductCardInfo] = useState<productCardsArray[]>(
     []
@@ -182,18 +177,6 @@ function PageContent({ isSidebarOpen, setSidebarOpen }: PageProps) {
             </Link>
           ))}
         </Slider>
-      </div>
-      <div
-        className="absolute top-0 left-0 z-40"
-        style={{
-          transform: isSidebarOpen ? "translateX(0)" : "translateX(-100%)",
-          transition: "transform 0.3s ease-in-out",
-        }}
-      >
-        <SidebarMenu
-          isSidebarOpen={isSidebarOpen}
-          setSidebarOpen={setSidebarOpen}
-        />
       </div>
       <div className="z-10 flex flex-col items-start justify-between w-full">
         <div className="flex items-start justify-between w-full bg-cover bg-left">

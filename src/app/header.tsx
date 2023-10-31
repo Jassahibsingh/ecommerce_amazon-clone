@@ -76,7 +76,7 @@ const Header = ({
           >
             <Link
               className="flex flex-col p-2 text-white cursor-pointer text-xs w-[9rem] hover:outline outline-1"
-              href="/server/Login"
+              href="/server/login"
             >
               Hello, Sign In
               <span className="flex items-center text-sm font-bold">

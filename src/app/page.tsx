@@ -5,8 +5,8 @@ import PageContent from "./pageContent";
 import Footer from "./footer";
 import Backdrop from "@mui/material/Backdrop";
 import LocationModal from "./locationModal";
-import Login from "./server/Login";
-import Registration from "./server/Registration";
+// import Page from "./productView/page";
+import SidebarMenu from "./sidebarMenu";
 
 function Page() {
   const [isBackdropOpen, setBackdropOpen] = useState<boolean>(false);
@@ -44,6 +44,18 @@ function Page() {
         isLocModalOpen={isLocModalOpen}
         setLocModalOpen={setLocModalOpen}
       />
+      <div
+        className="absolute top-0 left-0 z-40"
+        style={{
+          transform: isSidebarOpen ? "translateX(0)" : "translateX(-100%)",
+          transition: "transform 0.3s ease-in-out",
+        }}
+      >
+        <SidebarMenu
+          isSidebarOpen={isSidebarOpen}
+          setSidebarOpen={setSidebarOpen}
+        />
+      </div>
       <div className="bg-gray-100 min-h-screen">
         <Header
           handleBackdrop={handleBackdrop}
@@ -51,14 +63,20 @@ function Page() {
           setSidebarOpen={setSidebarOpen}
           setLocModalOpen={setLocModalOpen}
         />
-        <PageContent
-          isSidebarOpen={isSidebarOpen}
-          setSidebarOpen={setSidebarOpen}
-        />
+        <PageContent />
+        {/* <Page
+          setLocModalOpen={setLocModalOpen}
+          img={""}
+          heading={""}
+          rating={0}
+          price={0}
+          info={""}
+          about={""}
+          infoSummary={""}
+          inStock={true}
+        /> */}
         <Footer />
       </div>
-      {/* <Login /> */}
-      {/* <Registration /> */}
     </div>
   );
 }

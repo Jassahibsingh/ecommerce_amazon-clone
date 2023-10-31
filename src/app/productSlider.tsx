@@ -54,25 +54,13 @@ function ProductSlider({ header, sliderArray }: ProductSliderProps) {
         >
           <GoChevronLeft color="#555" size={45} />
         </div>
-        {/* <div
-          ref={ref}
-          className="flex items-center w-full h-[206px] scroll overflow-x-scroll scroll-smooth"
-        >
-          <Slider {...settings} ref={sliderRef}>
-            {sliderArray.map((e: any) => (
-              <Link href={"#"} key={e.id} className="min-w-[300p">
-                <img src={e.image} className="object-contain block" alt={""} />
-              </Link>
-            ))}
-          </Slider>
-        </div> */}
         <div className="flex items-center justify-center">
           <div className="w-[1155px] h-full fle items-center justify-center scrol">
             <Slider {...settings} ref={sliderRef}>
               {sliderArray.map((e) => (
                 <Link
                   key={e.id}
-                  href={"#"}
+                  href={"/product-view"}
                   className="flex items-center justify-center"
                 >
                   <img
