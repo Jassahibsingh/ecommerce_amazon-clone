@@ -2,17 +2,16 @@ import Divider from "@mui/material/Divider";
 import Link from "next/link";
 import React from "react";
 import Modal from "react-modal";
+import { useDispatch, useSelector } from "react-redux";
+import { setLocModalOpen } from "./redux/headerFuncSlices";
+import { RootState } from "./redux/store";
 
-interface LocationModalProps {
-  isLocModalOpen: boolean;
-  setLocModalOpen: (value: boolean) => void;
-}
-
-function LocationModal({
-  isLocModalOpen,
-  setLocModalOpen,
-}: LocationModalProps) {
-  const closeModal = () => setLocModalOpen(false);
+function LocationModal() {
+  const dispatch = useDispatch();
+  const isLocModalOpen = useSelector(
+    (state: RootState) => state.header.isLocModalOpen
+  );
+  const closeModal = () => dispatch(setLocModalOpen(false));
 
   return (
     <div className="">
