@@ -5,13 +5,16 @@ import { BsChevronDown, BsChevronRight } from "react-icons/bs";
 import Divider from "@mui/material/Divider";
 import Backdrop from "@mui/material/Backdrop";
 import { CiGlobe } from "react-icons/ci";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "./redux/store";
+import { setSidebarOpen } from "./redux/headerFuncSlices";
 
-interface sidebarProps {
-  isSidebarOpen: boolean;
-  setSidebarOpen: (value: boolean) => void;
-}
+function SidebarMenu() {
+  const dispatch = useDispatch();
+  const isSidebarOpen = useSelector(
+    (state: RootState) => state.header.isSidebarOpen
+  );
 
-function SidebarMenu({ isSidebarOpen, setSidebarOpen }: sidebarProps) {
   return (
     <div className="flex relative w-[370px] bg-white">
       <div className="w-full">
@@ -105,7 +108,7 @@ function SidebarMenu({ isSidebarOpen, setSidebarOpen }: sidebarProps) {
       <span
         className="absolute -right-9 top-4 cursor-pointer"
         style={{ visibility: isSidebarOpen ? "visible" : "hidden" }}
-        onClick={() => setSidebarOpen(false)}
+        onClick={() => dispatch(setSidebarOpen(false))}
       >
         <CgClose color="white" size={28} />
       </span>

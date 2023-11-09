@@ -7,20 +7,17 @@ import LanguageSelector from "./languageSelector";
 import { Backdrop } from "@mui/material";
 import AccountsListsPopup from "./accountsListsPopup";
 import Link from "next/link";
+import { useDispatch } from "react-redux";
+import { setLocModalOpen, setSidebarOpen } from "./redux/headerFuncSlices";
+import { useRouter } from "next/navigation";
 
 interface headerProps {
-  handleBackdrop: (value: boolean) => void;
-  isSidebarOpen: boolean;
-  setSidebarOpen: (value: boolean) => void;
-  setLocModalOpen: (value: boolean) => void;
+  handleBackdrop?: (value: boolean) => void;
 }
 
-const Header = ({
-  handleBackdrop,
-  isSidebarOpen,
-  setSidebarOpen,
-  setLocModalOpen,
-}: headerProps) => {
+const Header = ({ handleBackdrop }: headerProps) => {
+  const Router = useRouter();
+  const dispatch = useDispatch();
   return (
     <header className="flex flex-col bg-[#131920] w-full">
       <div className="flex items-center z-30">
@@ -31,7 +28,7 @@ const Header = ({
         />
         <div
           className="flex flex-col items-center p-2 text-white cursor-pointer text-xs w-20 hover:outline outline-1"
-          onClick={() => setLocModalOpen(true)}
+          onClick={() => dispatch(setLocModalOpen(true))}
         >
           Deliver to
           <div className="flex items-center text-sm font-bold">
@@ -51,8 +48,8 @@ const Header = ({
         </div>
         <div className="flex items-center ml-auto space-x-2 w-[25rem]">
           <Tooltip
-            onOpen={() => handleBackdrop(true)}
-            onClose={() => handleBackdrop(false)}
+            onOpen={() => handleBackdrop && handleBackdrop(true)}
+            onClose={() => handleBackdrop && handleBackdrop(false)}
             title={"Language Selection"}
             arrow
             PopperComponent={LanguageSelector}
@@ -68,8 +65,8 @@ const Header = ({
             </div>
           </Tooltip>
           <Tooltip
-            onOpen={() => handleBackdrop(true)}
-            onClose={() => handleBackdrop(false)}
+            onOpen={() => handleBackdrop && handleBackdrop(true)}
+            onClose={() => handleBackdrop && handleBackdrop(false)}
             title={"Accounts & Lists"}
             arrow
             PopperComponent={AccountsListsPopup}
@@ -91,7 +88,10 @@ const Header = ({
               & Orders
             </span>
           </div>
-          <div className="flex items-end relative px-2 py-2.5 text-white cursor-pointer text-sm hover:outline outline-1">
+          <div
+            className="flex items-end relative px-2 py-2.5 text-white cursor-pointer text-sm hover:outline outline-1"
+            onClick={() => Router.push("/cart")}
+          >
             <div className="flex flex-col items-center">
               <FiShoppingCart size={30} />
             </div>
@@ -103,7 +103,7 @@ const Header = ({
         <div
           className="flex items-center p-2 text-white cursor-pointer text-sm hover:outline outline-1"
           onClick={() => {
-            setSidebarOpen(true);
+            dispatch(setSidebarOpen(true));
           }}
         >
           <FiMenu size={20} />

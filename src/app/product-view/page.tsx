@@ -1,8 +1,7 @@
 "use client";
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import Divider from "@mui/material/Divider";
-import Breadcrumbs from "@mui/material/Breadcrumbs";
 import Rating from "@mui/material/Rating";
 import ReactImageMagnify from "@blacklab/react-image-magnify";
 import { useZoomImageHover } from "@zoom-image/react";
@@ -10,45 +9,96 @@ import { BsChevronDown } from "react-icons/bs";
 import { CiLocationOn } from "react-icons/ci";
 import Header from "../header";
 import Footer from "../footer";
+import { supabase } from "@/supabase/supabase";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../redux/store";
+import { setLocModalOpen } from "../redux/headerFuncSlices";
+import { useRouter } from "next/navigation";
 
-interface productViewPageProps {
-  img: string;
-  heading: string;
+interface productArray {
+  productid: number;
+  productimage: string;
   rating: number;
   price: number;
-  info: string;
   about: string;
-  infoSummary: string;
-  inStock: boolean;
-  setLocModalOpen: (value: boolean) => void;
+  instock: boolean;
+  heading: string;
 }
 
-function Page({ inStock, setLocModalOpen }: productViewPageProps) {
-  const { createZoomImage: createZoomImageHover } = useZoomImageHover();
+function ProductView({
+  searchParams,
+}: {
+  searchParams: {
+    productID: number;
+  };
+}) {
+  const [hover, setHover] = useState(false);
+  const [productData, setProductData] = useState<productArray[]>([]);
+  const [discount, setDiscount] = useState<number>();
+  const [imageWidth, setImageWidth] = useState<number>(0);
+  const productid = useSelector((state: RootState) => state.product.productid);
+  const dispatch = useDispatch();
+  const Router = useRouter();
 
   const imageHoverContainerRef = useRef<HTMLDivElement>(null);
   const zoomTargetRef = useRef<HTMLDivElement>(null);
+  const imgRef = useRef<HTMLImageElement>(null);
 
   const imageContainer = imageHoverContainerRef.current as HTMLDivElement;
   const zoomTarget = zoomTargetRef.current as HTMLDivElement;
+  const { createZoomImage: createZoomImageHover } = useZoomImageHover();
+
+  async function productDataFetch() {
+    try {
+      const { data, error } = await supabase
+        .from("products")
+        .select("*")
+        .eq("productid", searchParams.productID);
+      if (data) {
+        setProductData(data);
+      } else {
+        console.log("Error", error);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  }
 
   useEffect(() => {
-    if (imageContainer && zoomTarget) {
+    productDataFetch();
+    setDiscount(Math.floor(Math.random() * 51));
+    console.log("productData", productData, productData[0]?.about);
+  }, []);
+
+  useEffect(() => {
+    const imgElement = imgRef.current;
+
+    if (imgElement) {
+      if (imgElement.complete) {
+        // Image has already loaded
+        setImageWidth(imgElement.naturalWidth);
+      } else {
+        // Image hasn't loaded yet, use event listener
+        imgElement.addEventListener("load", () => {
+          setImageWidth(imgElement.naturalWidth);
+        });
+      }
+    }
+    console.log(imageWidth);
+  }, [productData]);
+
+  useEffect(() => {
+    imageContainer &&
+      zoomTarget &&
       createZoomImageHover(imageContainer, {
-        zoomImageSource: "/uno.jpg",
+        zoomImageSource: productData[0]?.productimage,
         customZoom: { width: 580, height: 530 },
         zoomTarget,
-        scale: 2,
-        zoomLensScale: 0.75,
+        scale: 1.5,
+        zoomLensScale: 0.6,
       });
-      console.log("image");
-    }
-  }, [imageContainer]);
-
-  const breadcrumbs = [
-    <div key={1}>Books</div>,
-    <div key={2}>Atomic Habits</div>,
-  ];
+    console.log("image");
+  }, [hover, productData]);
 
   function formatDateWithOffset(offsetDays: number): string {
     const days = [
@@ -88,31 +138,16 @@ function Page({ inStock, setLocModalOpen }: productViewPageProps) {
   }
 
   return (
-    <div className="flex flex-col items-center bg-white">
-      <Header
-        handleBackdrop={function (value: boolean): void {
-          throw new Error("Function not implemented.");
-        }}
-        isSidebarOpen={false}
-        setSidebarOpen={function (value: boolean): void {
-          throw new Error("Function not implemented.");
-        }}
-        setLocModalOpen={function (value: boolean): void {
-          throw new Error("Function not implemented.");
-        }}
-      />
-      <Breadcrumbs
-        className="w-full text-[12px]"
-        separator="›"
-        aria-label="breadcrumb"
-      >
-        {breadcrumbs}
-      </Breadcrumbs>
+    <div
+      className="flex flex-col items-center bg-white"
+      onMouseOver={() => setHover(true)}
+    >
+      <Header />
 
       {/* Product image part */}
       <div className="flex w-full my-3">
-        <div className="flex bg-slate-5 w-[1250px]">
-          <div className="flex flex-col items-center m-4">
+        <div className="flex justify-center bg-slate-5 w-[1250px]">
+          {/* <div className="flex flex-col items-center m-4">
             <span className="w-[45px] h-[45px] overflow-hidden mb-2">
               <img src="/uno.jpg" className="object-contain" alt="" />
             </span>
@@ -125,12 +160,17 @@ function Page({ inStock, setLocModalOpen }: productViewPageProps) {
             <span className="w-[45px] h-[45px] overflow-hidden mb-2">
               <img src="/uno.jpg" className="object-contain" alt="" />
             </span>
-          </div>
+          </div> */}
           <div
             ref={imageHoverContainerRef}
-            className="relative flex h-[450px] items-start"
+            className="relative flex h-[450px] w-[400px] items-start"
           >
-            <img className="h-full w-full" alt="Small Pic" src="/uno.jpg" />
+            <img
+              ref={imgRef}
+              className="h-full w-full"
+              alt="Small Pic"
+              src={productData[0]?.productimage}
+            />
             <div
               ref={zoomTargetRef}
               className="absolute left-[400px] z-10"
@@ -142,16 +182,15 @@ function Page({ inStock, setLocModalOpen }: productViewPageProps) {
         {/* Product info part */}
         <div className="flex flex-col w-[1534px] m-4">
           <div className="text-[23px] font-medium leading-8">
-            Mattel Games UNO Card Game, Toy for Kids and Adults, Family Game for
-            Camping and Travel in Storage Tin Box (Amazon Exclusive)
+            {productData[0]?.heading}
           </div>
           <div className="flex items-center text-[14px]">
             <span className="flex items-center my-1 mr-4">
-              4.8{" "}
+              {productData[0]?.rating}{" "}
               <Rating
                 className="mx-1 tracking-tighter"
                 name="read-only"
-                value={4.8}
+                value={productData[0]?.rating}
                 precision={0.1}
                 size="small"
                 readOnly
@@ -171,11 +210,12 @@ function Page({ inStock, setLocModalOpen }: productViewPageProps) {
           </span>
           <Divider className="w-[550px] my-1" />
           <div className="flex my-1 text-[23px]">
-            <span className="text-[#CC0C39] text-[21px] mr-2">-33%</span>
+            <span className="text-[#CC0C39] text-[21px] mr-2">
+              -{discount}%
+            </span>
             <div className="flex items-start">
-              <span className="text-[12px] font-thin">$</span>
-              <span className="font-medium">10</span>
-              <span className="text-[12px] font-thin">99</span>
+              <span className="text-[12px]">$</span>
+              <span className="font-medium">{productData[0]?.price}</span>
             </div>
           </div>
           <div className="flex text-[13px] text-[#565959] mb-1">
@@ -220,26 +260,12 @@ function Page({ inStock, setLocModalOpen }: productViewPageProps) {
           <div className="mt-2">
             <span className="font-bold text-[15px] mb-4">About this item</span>
             <ul className="list-disc text-[14px] space-y-1 pl-4">
-              <li>
-                UNO is the classic family card game that&apos;s easy to learn
-                and so much fun to play!
-              </li>
-              <li>
-                In a race to deplete your hand, match one of your cards with the
-                current card shown on top of the deck by either color or number.
-              </li>
-              <li>
-                Strategize to defeat your competition with special action cards
-                like Skips, Reverses, Draw Twos and color-changing Wild cards.
-              </li>
-              <li>
-                When you&apos;re down to one card, don&apos;t forget to shout
-                &quot;UNO!&quot;
-              </li>
-              <li>
-                This fun family card game is perfect for adults, teens and kids
-                7 years old and up.
-              </li>
+              {productData[0]?.about
+                .split(/[;\n]/)
+                .filter((item) => item.trim() !== "")
+                .map((item, id) => (
+                  <li key={id}>{item}</li>
+                ))}
             </ul>
           </div>
         </div>
@@ -249,9 +275,8 @@ function Page({ inStock, setLocModalOpen }: productViewPageProps) {
         <div className="flex w-[700px] bg-white mr-4">
           <div className="flex flex-col  rounded-lg border border-[#ddd] p-[20px] mb-[22px]">
             <div className="flex items-start text-[28px] mb-3">
-              <span className="text-[12px] font-thin">$</span>
-              <span className="font-medium">10</span>
-              <span className="text-[12px] font-thin">99</span>
+              <span className="text-[12px] ">$</span>
+              <span className="font-medium">{productData[0]?.price}</span>
             </div>
             <div className="text-[13px] text-[#565959] mb-1">
               $22.16 Shipping & Import Fees Deposit to India{" "}
@@ -271,12 +296,12 @@ function Page({ inStock, setLocModalOpen }: productViewPageProps) {
                 href={"#"}
               >
                 {" "}
-                14 hrs 26 mins
+                5 hrs 26 mins
               </Link>
             </div>
             <span
               className="flex text-[12px] mt-1"
-              onClick={() => setLocModalOpen(true)}
+              onClick={() => dispatch(setLocModalOpen(true))}
             >
               <CiLocationOn size={15} color={"black"} />
               <Link
@@ -289,18 +314,19 @@ function Page({ inStock, setLocModalOpen }: productViewPageProps) {
             </span>
             <span
               className={`${
-                inStock ? "text-[#007600]" : "text-[#CC0C39]"
+                productData[0]?.instock ? "text-[#007600]" : "text-[#CC0C39]"
               } text-[18px] font-medium my-2`}
             >
-              {inStock ? "In Stock" : "Out of Stock"}
+              {productData[0]?.instock ? "In Stock" : "Out of Stock"}
             </span>
             <select
               className="w-[70px] border bg-[#F0F2F2] border-[#D5D9D9] hover:bg-[#e9e9e9] text-[13px] focus:ring-cyan-400 focus:ring-opacity-100 rounded-lg my-3 py-[5px] px-[7px] outline-none"
               style={{ boxShadow: "0 2px 5px 0 rgba(213,217,217,.5)" }}
               name="Country"
               id=""
+              defaultValue={1}
             >
-              <option className="" value="" disabled selected hidden>
+              <option className="" value="" disabled hidden>
                 Qty:1
               </option>
               {Array.from({ length: 30 }, (_, i) => (
@@ -312,7 +338,10 @@ function Page({ inStock, setLocModalOpen }: productViewPageProps) {
             <span className="flex items-center justify-center bg-[#FED914] hover:bg-[#fed050] p-2 mt-4 text-[13px] rounded-full cursor-pointer">
               Add to Cart
             </span>
-            <span className="flex items-center justify-center bg-[#FFA41C] hover:bg-[#FF8F00] p-2 mt-2 text-[13px] rounded-full cursor-pointer">
+            <span
+              className="flex items-center justify-center bg-[#FFA41C] hover:bg-[#FF8F00] p-2 mt-2 text-[13px] rounded-full cursor-pointer"
+              onClick={() => Router.push("/cart")}
+            >
               Buy now
             </span>
             <table className="space-y-3 mt-4">
@@ -379,7 +408,11 @@ function Page({ inStock, setLocModalOpen }: productViewPageProps) {
       {/* Product info summary */}
       <div className="flex w-full p-5">
         <table className="my-4 mr-8 w-[50%]">
-          <thead className="text-[17px] font-bold">Product information</thead>
+          <thead className="flex text-xl font-bold mb-2">
+            <tr>
+              <th colSpan={2}>Product Information</th>
+            </tr>
+          </thead>
           <tbody className="text-[14px]">
             <tr className="border-t-[1px] border-b-[1px] border-[#BABEBF]">
               <td className="text-[#565959] bg-[#F1F2F3] w-[50%] py-2 px-4">
@@ -476,4 +509,4 @@ function Page({ inStock, setLocModalOpen }: productViewPageProps) {
   );
 }
 
-export default Page;
+export default ProductView;

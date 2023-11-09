@@ -1,14 +1,20 @@
+"use client";
 import React from "react";
 import Popper from "@mui/material/Popper";
 import Divider from "@mui/material/Divider";
 import Link from "next/link";
 import { BsChevronRight } from "react-icons/bs";
+import { useRouter } from "next/navigation";
 
-const LanguageSelector = (props: any) => {
+const AccountsListsPopup = (props: any) => {
+  const router = useRouter();
   return (
     <Popper {...props} Arrow placement="bottom-start">
       <div className="flex flex-col items-start justify-center bg-white absolute top-14 left-[49.2rem] w-[500px] px-4 py-4">
-        <div className="flex justify-between bg-[#E7F4F5] rounded-[6px] text-[13px] p-[12px] cursor-pointer w-full">
+        <div
+          className="flex justify-between bg-[#E7F4F5] rounded-[6px] text-[13px] p-[12px] cursor-pointer w-full"
+          onClick={() => router.push("/server/login")}
+        >
           Who&apos;s shopping? Select a profile.
           <span className="flex items-center justify-center text-[14px] font-medium text-[#007185] hover:text-[#f08804] hover:underline">
             Manage Profiles
@@ -76,4 +82,4 @@ const LanguageSelector = (props: any) => {
   );
 };
 
-export default LanguageSelector;
+export default AccountsListsPopup;

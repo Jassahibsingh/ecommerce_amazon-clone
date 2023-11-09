@@ -1,6 +1,8 @@
 "use client";
 import React, { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import { useDispatch } from "react-redux";
+import { setProductid } from "./redux/productSlice";
 import { GoChevronLeft, GoChevronRight } from "react-icons/go";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
@@ -18,6 +20,7 @@ interface ProductSliderProps {
 }
 
 function ProductSlider({ header, sliderArray }: ProductSliderProps) {
+  const dispatch = useDispatch();
   const ref = useRef<HTMLDivElement | null>(null);
   const sliderRef = useRef<Slider | null>(null);
 
@@ -60,11 +63,17 @@ function ProductSlider({ header, sliderArray }: ProductSliderProps) {
               {sliderArray.map((e) => (
                 <Link
                   key={e.id}
-                  href={"/product-view"}
+                  href={{
+                    pathname: "/product-view",
+                    query: {
+                      productID: e.id,
+                    },
+                  }}
                   className="flex items-center justify-center"
                 >
                   <img
                     src={e.image}
+                    onClick={() => dispatch(setProductid(e.id))}
                     className="bg-green-400"
                     alt={`image ${e.id}`}
                   />
