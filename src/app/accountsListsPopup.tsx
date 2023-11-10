@@ -5,15 +5,19 @@ import Divider from "@mui/material/Divider";
 import Link from "next/link";
 import { BsChevronRight } from "react-icons/bs";
 import { useRouter } from "next/navigation";
+import { supabase } from "@/supabase/supabase";
 
 const AccountsListsPopup = (props: any) => {
   const router = useRouter();
+  async function signOut() {
+    const { error } = await supabase.auth.signOut();
+  }
   return (
     <Popper {...props} Arrow placement="bottom-start">
       <div className="flex flex-col items-start justify-center bg-white absolute top-14 left-[49.2rem] w-[500px] px-4 py-4">
         <div
           className="flex justify-between bg-[#E7F4F5] rounded-[6px] text-[13px] p-[12px] cursor-pointer w-full"
-          onClick={() => router.push("/server/login")}
+          onClick={() => router.push("/login")}
         >
           Who&apos;s shopping? Select a profile.
           <span className="flex items-center justify-center text-[14px] font-medium text-[#007185] hover:text-[#f08804] hover:underline">
@@ -72,7 +76,9 @@ const AccountsListsPopup = (props: any) => {
                 <Link href={"#"}>Switch Accounts</Link>
               </li>
               <li className="hover:text-[#f08804] hover:underline">
-                <Link href={"#"}>Sign Out</Link>
+                <div className="cursor-pointer" onClick={signOut}>
+                  Sign Out
+                </div>
               </li>
             </ul>
           </div>
