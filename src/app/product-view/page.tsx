@@ -13,7 +13,7 @@ import { supabase } from "@/supabase/supabase";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 import { setLocModalOpen } from "../redux/headerFuncSlices";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 interface productArray {
   productid: number;
@@ -25,18 +25,13 @@ interface productArray {
   heading: string;
 }
 
-function ProductView({
-  searchParams,
-}: {
-  searchParams: {
-    productID: number;
-  };
-}) {
+function ProductView() {
   const [hover, setHover] = useState(false);
   const [productData, setProductData] = useState<productArray[]>([]);
   const [discount, setDiscount] = useState<number>();
   const [imageWidth, setImageWidth] = useState<number>(0);
   const productid = useSelector((state: RootState) => state.product.productid);
+  const searchParams = useSearchParams();
   const dispatch = useDispatch();
   const Router = useRouter();
 
@@ -53,7 +48,7 @@ function ProductView({
       const { data, error } = await supabase
         .from("products")
         .select("*")
-        .eq("productid", searchParams.productID);
+        .eq("productid", searchParams.get("productID"));
       if (data) {
         setProductData(data);
       } else {
@@ -66,7 +61,7 @@ function ProductView({
 
   useEffect(() => {
     productDataFetch();
-    setDiscount(Math.floor(Math.random() * 51));
+    setDiscount(Math.floor(Math.random() * (30 - 20 + 1) + 20));
     console.log("productData", productData, productData[0]?.about);
   }, []);
 
