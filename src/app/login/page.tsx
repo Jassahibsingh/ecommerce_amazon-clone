@@ -4,31 +4,20 @@ import Link from "next/link";
 import { GoTriangleRight } from "react-icons/go";
 import Divider from "@mui/material/Divider";
 import { supabase } from "@/supabase/supabase";
-import { BsInfo } from "react-icons/bs";
-
+import { useRouter } from "next/navigation";
 function Page() {
   const [email, setEmail] = useState("");
-  const [name, setName] = useState("");
   const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-
-  async function handleRegistration() {
-    if (password !== confirmPassword) {
-      alert("Passwords do not match");
-      return;
-    }
-    const { data, error } = await supabase.auth.signUp({
+  const Router = useRouter();
+  async function handleLogin() {
+    const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,
-      options: {
-        data: {
-          name,
-        },
-      },
     });
     if (error) {
-      console.log("Registration Error", error);
+      console.log("SignIn Error", error);
     } else {
+      Router.push("/");
       console.log("user", data);
     }
   }
@@ -42,18 +31,7 @@ function Page() {
         />
       </div>
       <div className="flex flex-col w-[350px] rounded-lg border border-[#ddd] p-[20px] mb-[22px]">
-        <div className="font-normal text-[26px] mb-[10px]">Create account</div>
-        <div className="font-semibold tracking-wider text-[12px] mb-4">
-          Your name
-          <input
-            type="text"
-            placeholder="First and last name"
-            className="font-normal border border-[#888C8C] focus:ring-cyan-400 focus:ring-opacity-100 rounded  py-[4px] px-[7px] mt-1 w-full outline-none"
-            style={{ boxShadow: "0 1px 2px rgba(15,17,17,.15)" }}
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-          />
-        </div>
+        <div className="font-normal text-[26px] mb-[10px]">Sign in</div>
         <div className="font-semibold tracking-wider text-[12px] mb-4">
           Email
           <input
@@ -65,35 +43,27 @@ function Page() {
           />
         </div>
         <div className="font-semibold tracking-wider text-[12px] mb-1">
-          Password
+          <span className="flex justify-between">
+            Password
+            <Link
+              className="font-normal text-[11px] text-[#007185] hover:text-[#f08804] hover:underline cursor-pointer"
+              href={"#"}
+            >
+              {" "}
+              Forgot your password?
+            </Link>
+          </span>
           <input
             type="text"
-            placeholder="At least 6 characters"
             className="font-normal border border-[#888C8C] outline:ring-cyan-400 focus:ring-opacity-100 rounded mt-1  py-[4px] px-[7px] w-full outline-none"
             style={{ boxShadow: "0 1px 2px rgba(15,17,17,.15)" }}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
         </div>
-        <div className="flex items-center justify-start text-[11px] text-[#2b2b2b] font-thin">
-          <i>
-            <BsInfo color={"#007185"} size={20} />
-          </i>
-          Passwords must be at least 6 characters.
-        </div>
-        <div className="font-semibold tracking-wider text-[12px] my-2">
-          Re-enter password
-          <input
-            type="text"
-            className="font-normal border border-[#888C8C] outline:ring-cyan-400 focus:ring-opacity-100 rounded mt-1  py-[4px] px-[7px] w-full outline-none"
-            style={{ boxShadow: "0 1px 2px rgba(15,17,17,.15)" }}
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-          />
-        </div>
         <span
           className="flex items-center justify-center bg-[#FED914] hover:bg-[#fed050] p-2 mt-4 text-[13px] rounded-lg cursor-pointer"
-          onClick={handleRegistration}
+          onClick={handleLogin}
         >
           Continue
         </span>
@@ -104,12 +74,11 @@ function Page() {
           style={{ boxShadow: "0 2px 5px 0 rgba(213,217,217,.5)" }}
           className="flex items-center justify-center font-semibold p-2 border-[#D5D9D9] bg-white hover:bg-slate-50 text-[13px] border rounded-md cursor-pointer"
         >
-          SignUp with Google
+          SignIn with Google
           <img src="/Google.jpg" className="w-[40px]" alt="" />
         </div>
         <div className="text-[11px] mt-6">
-          By creating an account, you agree to Amazon&apos;s
-          <br />
+          By continuing, you agree to Amazon&apos;s
           <Link
             className="text-[#007185] hover:text-[#f08804] hover:underline cursor-pointer"
             href={"#"}
@@ -127,19 +96,30 @@ function Page() {
           </Link>
           .
         </div>
-        <Divider className="my-4" />
-        <div className="flex text-[12px]">
-          <span className="mr-1">Already have an account?</span>
+        <div className="flex text-[12px] mt-6">
+          <GoTriangleRight />
           <Link
             className="flex items-center text-[#007185] hover:text-[#f08804] hover:underline cursor-pointer"
-            href="/server/login"
+            href={"#"}
           >
             {" "}
-            Sign in
-            <GoTriangleRight />
+            Need help?
           </Link>
         </div>
       </div>
+      <Divider
+        className="text-[11px] text-[#767676] mt-2 w-[300px]"
+        variant="middle"
+      >
+        New to Amazon?
+      </Divider>
+      <Link
+        href="/registration"
+        style={{ boxShadow: "0 2px 5px 0 rgba(213,217,217,.5)" }}
+        className="flex items-center justify-center my-4 p-2 w-[350px] border-[#D5D9D9] bg-white hover:bg-slate-50 text-[12px] border rounded-md cursor-pointer"
+      >
+        Create your Amazon account
+      </Link>
       <div
         className="bg-[linear-gradient(to bottom,rgba(0,0,0,.14),rgba(0,0,0,.03) 3px,transparent)]"
         style={{
