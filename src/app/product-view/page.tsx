@@ -30,7 +30,7 @@ function ProductView() {
 
   const Router = useRouter();
   const searchParams = useSearchParams();
-  const productId = searchParams.get("productID");
+  const productId = searchParams?.get("productID");
 
   const dispatch = useDispatch();
 
