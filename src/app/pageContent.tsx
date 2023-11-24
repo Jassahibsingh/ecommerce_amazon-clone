@@ -3,7 +3,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { GoChevronLeft, GoChevronRight } from "react-icons/go";
 import ProductsCard from "./productsCard";
 import ProductSlider from "./productSlider";
-import SidebarMenu from "./sidebarMenu";
+import SidebarMenu from "./components/sidebarMenu";
 import { supabase } from "@/supabase/supabase";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
@@ -147,7 +147,6 @@ function PageContent() {
     try {
       const { data, error } = await supabase.from("toy_slider").select("*");
       if (data) {
-        console.log("toys images", data);
         setToySlider(data);
       }
       if (error) throw error;

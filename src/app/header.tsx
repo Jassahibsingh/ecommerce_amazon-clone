@@ -3,12 +3,12 @@ import React, { useState } from "react";
 import Tooltip from "@mui/material/Tooltip";
 import { AiOutlineSearch, AiFillCaretDown } from "react-icons/ai";
 import { FiMapPin, FiShoppingCart, FiMenu } from "react-icons/fi";
-import LanguageSelector from "./languageSelector";
+import LanguageSelector from "./components/languageSelector";
 import { Backdrop } from "@mui/material";
-import AccountsListsPopup from "./accountsListsPopup";
+import AccountsListsPopup from "./components/accountsListsPopup";
 import Link from "next/link";
 import { useDispatch } from "react-redux";
-import { setLocModalOpen, setSidebarOpen } from "./redux/headerFuncSlices";
+import { setLocModalOpen, setSidebarOpen } from "../redux/headerFuncSlices";
 import { useRouter } from "next/navigation";
 
 interface headerProps {

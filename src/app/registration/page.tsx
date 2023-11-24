@@ -6,7 +6,7 @@ import Divider from "@mui/material/Divider";
 import { supabase } from "@/supabase/supabase";
 import { BsCheckCircleFill, BsInfo } from "react-icons/bs";
 
-function Page() {
+function Register() {
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
@@ -192,4 +192,4 @@ function Page() {
   );
 }
 
-export default Page;
+export default Register;
