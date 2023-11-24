@@ -3,8 +3,8 @@ import Link from "next/link";
 import React from "react";
 import Modal from "react-modal";
 import { useDispatch, useSelector } from "react-redux";
-import { setLocModalOpen } from "./redux/headerFuncSlices";
-import { RootState } from "./redux/store";
+import { setLocModalOpen } from "../../redux/headerFuncSlices";
+import { RootState } from "../../redux/store";
 
 function LocationModal() {
   const dispatch = useDispatch();

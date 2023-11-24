@@ -11,12 +11,13 @@
     "pre-push": "next build"
   },
   "dependencies": {
-    "@blacklab/react-image-magnify": "^4.1.1",
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
     "@mui/material": "^5.14.4",
     "@mui/styled-engine-sc": "^5.12.0",
     "@reduxjs/toolkit": "^1.9.7",
+    "@stripe/react-stripe-js": "^2.3.2",
+    "@stripe/stripe-js": "^2.1.11",
     "@supabase/supabase-js": "^2.37.0",
     "@types/node": "20.4.9",
     "@types/react": "18.2.20",
@@ -30,11 +31,9 @@
     "eslint-config-next": "13.4.13",
     "express": "^4.18.2",
     "next": "13.4.13",
-    "passport": "^0.6.0",
-    "passport-google-oauth20": "^2.0.0",
-    "passport-local": "^1.0.0",
     "postcss": "8.4.27",
     "react": "18.2.0",
+    "react-country-region-selector": "^3.6.1",
     "react-dom": "18.2.0",
     "react-icons": "^4.10.1",
     "react-modal": "^3.16.1",
@@ -42,6 +41,7 @@
     "react-slick": "^0.29.0",
     "redux": "^4.2.1",
     "slick-carousel": "^1.8.1",
+    "stripe": "^14.5.0",
     "styled-components": "^5.3.11",
     "tailwindcss": "3.3.3",
     "typescript": "5.1.6"
@@ -54,5 +54,12 @@
     "@types/react-modal": "^3.16.0",
     "@types/react-slick": "^0.23.10",
     "express-session": "^1.17.3"
+  },
+  "browser": {
+    "tls": false,
+    "net": false,
+    "fs": false,
+    "os": false,
+    "path": false
   }
 }

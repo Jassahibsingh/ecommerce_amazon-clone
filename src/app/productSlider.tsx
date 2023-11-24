@@ -2,7 +2,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useDispatch } from "react-redux";
-import { setProductid } from "./redux/productSlice";
 import { GoChevronLeft, GoChevronRight } from "react-icons/go";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
@@ -73,7 +72,6 @@ function ProductSlider({ header, sliderArray }: ProductSliderProps) {
                 >
                   <img
                     src={e.image}
-                    onClick={() => dispatch(setProductid(e.id))}
                     className="bg-green-400"
                     alt={`image ${e.id}`}
                   />

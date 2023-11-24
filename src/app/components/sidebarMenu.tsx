@@ -6,8 +6,8 @@ import Divider from "@mui/material/Divider";
 import Backdrop from "@mui/material/Backdrop";
 import { CiGlobe } from "react-icons/ci";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "./redux/store";
-import { setSidebarOpen } from "./redux/headerFuncSlices";
+import { RootState } from "../../redux/store";
+import { setSidebarOpen } from "../../redux/headerFuncSlices";
 
 function SidebarMenu() {
   const dispatch = useDispatch();

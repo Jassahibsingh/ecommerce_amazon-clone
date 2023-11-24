@@ -4,11 +4,11 @@ import Header from "./header";
 import PageContent from "./pageContent";
 import Footer from "./footer";
 import Backdrop from "@mui/material/Backdrop";
-import LocationModal from "./locationModal";
-import SidebarMenu from "./sidebarMenu";
+import LocationModal from "./components/locationModal";
+import SidebarMenu from "./components/sidebarMenu";
 import { useDispatch, useSelector } from "react-redux";
-import { setBackdropOpen, setSidebarOpen } from "./redux/headerFuncSlices";
-import { RootState } from "./redux/store";
+import { setBackdropOpen, setSidebarOpen } from "../redux/headerFuncSlices";
+import { RootState } from "../redux/store";
 
 function Page() {
   const isSidebarOpen = useSelector(
