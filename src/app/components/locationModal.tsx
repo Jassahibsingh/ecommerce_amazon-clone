@@ -11,7 +11,7 @@ function LocationModal() {
   const isLocModalOpen = useSelector(
     (state: RootState) => state.header.isLocModalOpen
   );
-  const closeModal = () => dispatch(setLocModalOpen(false));
+  const closeModal: any = () => dispatch(setLocModalOpen(false));
 
   return (
     <div className="">

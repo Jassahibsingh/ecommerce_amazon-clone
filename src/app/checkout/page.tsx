@@ -18,7 +18,7 @@ function ProfilePage() {
     zipcode: "",
   });
   const [selectedPaymentOption, setSelectedPaymentOption] = useState("card");
-  const [showPaymentComponent, setShowPaymentComponent] = useState(false);
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
 
   const handleChange = (e: any) => {
     const { name, value } = e.target;
@@ -57,7 +57,7 @@ function ProfilePage() {
 
   const handlePaymentSubmit = () => {
     if (selectedPaymentOption === "card") {
-      setShowPaymentComponent(true);
+      setShowPaymentModal(true);
     } else if (selectedPaymentOption === "cod") {
       console.log("Processing pay on delivery...");
     }
@@ -334,7 +334,7 @@ function ProfilePage() {
                 onClick={() => {
                   selectedPaymentOption === "cod"
                     ? Router.push("/cart")
-                    : setShowPaymentComponent(true);
+                    : setShowPaymentModal(true);
                 }}
               >
                 {selectedPaymentOption === "cod"
@@ -343,13 +343,16 @@ function ProfilePage() {
               </span>
             </div>
           </div>
-          {showPaymentComponent ? (
-            <div className="flex flex-col bg-white rounded-lg border border-[#ddd] p-[20px] my-2">
-              <CheckoutForm />
-            </div>
+          {/* {showPaymentComponent ? (
+            <div className="flex flex-col bg-white rounded-lg border border-[#ddd] p-[20px] my-2"> */}
+          <CheckoutForm
+            showPaymentModal={showPaymentModal}
+            setShowPaymentModal={setShowPaymentModal}
+          />
+          {/* </div>
           ) : (
             ""
-          )}
+          )} */}
         </div>
         <div className="flex top-4 sticky flex-col w-[300px] max-h-[354px] min-h-[354px] bg-white rounded-lg border border-[#ddd] mt-2 mb-[22px]">
           <div className="p-[20px]">
