@@ -23,10 +23,25 @@ interface productArray {
   heading: string;
 }
 
+interface ProductInfo {
+  productID: string | null | undefined;
+  quantity: number;
+}
+
+interface CartData {
+  users: string;
+  products: ProductInfo[];
+}
+
 function ProductView() {
   const [hover, setHover] = useState(false);
   const [productData, setProductData] = useState<productArray[]>([]);
+  const [qty, setQty] = useState(1);
   const [discount, setDiscount] = useState<number>();
+  const [cartData, setCartData] = useState<CartData>({
+    users: "",
+    products: [],
+  });
 
   const Router = useRouter();
   const searchParams = useSearchParams();
@@ -60,6 +75,8 @@ function ProductView() {
 
   useEffect(() => {
     productDataFetch();
+    const discount = Math.floor(Math.random() * (30 - 20 + 1)) + 20;
+    setDiscount(discount);
   }, []);
 
   useEffect(() => {
@@ -111,6 +128,54 @@ function ProductView() {
     return `${dayOfWeek}, ${month} ${date}, ${year}`;
   }
 
+  async function addToCart(checkout: boolean) {
+    const newProduct = { productID: productId, quantity: qty };
+
+    try {
+      const { data: existingData, error: fetchError } = await supabase
+        .from("user_cart")
+        .select("products")
+        .eq("users", sessionStorage.getItem("userEmail"));
+
+      if (fetchError) {
+        console.log("Error fetching existing data", fetchError);
+        return;
+      }
+
+      const existingProducts: ProductInfo[] = existingData?.[0]?.products || [];
+      let products: ProductInfo[] = [...existingProducts, newProduct];
+
+      if (existingProducts.length > 0) {
+        existingProducts.map((product: ProductInfo) => {
+          if (product.productID === productId) {
+            product.quantity = qty;
+            products = [...existingProducts];
+          }
+        });
+      }
+
+      const { data, error } = await supabase.from("user_cart").upsert([
+        {
+          users: sessionStorage.getItem("userEmail") || "",
+          products: products,
+        },
+      ]);
+
+      if (error) {
+        console.log("Error while adding to cart", error);
+      } else {
+        console.log("Data sent successfully", data);
+        setCartData({
+          users: "",
+          products: [],
+        });
+        if (checkout) Router.push("/cart");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  }
+
   return (
     productData && (
       <div
@@ -122,20 +187,6 @@ function ProductView() {
         {/* Product image part */}
         <div className="flex w-full my-3">
           <div className="flex justify-center bg-slate-5 w-[1250px]">
-            {/* <div className="flex flex-col items-center m-4">
-            <span className="w-[45px] h-[45px] overflow-hidden mb-2">
-              <img src="/uno.jpg" className="object-contain" alt="" />
-            </span>
-            <span className="w-[45px] h-[45px] overflow-hidden mb-2">
-              <img src="/uno.jpg" className="object-contain" alt="" />
-            </span>
-            <span className="w-[45px] h-[45px] overflow-hidden mb-2">
-              <img src="/uno.jpg" className="object-contain" alt="" />
-            </span>
-            <span className="w-[45px] h-[45px] overflow-hidden mb-2">
-              <img src="/uno.jpg" className="object-contain" alt="" />
-            </span>
-          </div> */}
             <div
               ref={imageHoverContainerRef}
               className="relative flex h-[450px] w-[400px] items-start"
@@ -301,23 +352,25 @@ function ProductView() {
                 style={{ boxShadow: "0 2px 5px 0 rgba(213,217,217,.5)" }}
                 name="Quantity"
                 id=""
-                defaultValue={1}
+                defaultValue={qty}
+                onChange={(e) => setQty(Number(e.target.value))}
               >
-                <option className="" value="" disabled hidden>
-                  Qty:1
-                </option>
                 {Array.from({ length: 30 }, (_, i) => (
                   <option key={i} value={i + 1}>
                     {i + 1}
                   </option>
                 ))}
               </select>
-              <span className="flex items-center justify-center bg-[#FED914] hover:bg-[#fed050] p-2 mt-4 text-[13px] rounded-full cursor-pointer">
+              <span
+                className="flex items-center justify-center bg-[#FED914] hover:bg-[#fed050] p-2 mt-4 text-[13px] rounded-full cursor-pointer"
+                onClick={() => addToCart(false)}
+              >
+                {" "}
                 Add to Cart
               </span>
               <span
                 className="flex items-center justify-center bg-[#FFA41C] hover:bg-[#FF8F00] p-2 mt-2 text-[13px] rounded-full cursor-pointer"
-                onClick={() => Router.push("/cart")}
+                onClick={() => addToCart(true)}
               >
                 Buy now
               </span>

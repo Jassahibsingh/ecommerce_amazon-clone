@@ -10,7 +10,7 @@ import Link from "next/link";
 
 const LanguageSelector = (props: any) => {
   return (
-    <Popper {...props} Arrow placement="bottom">
+    <Popper {...props} arrow="true" placement="top">
       <div className="flex flex-col items-start justify-center bg-white absolute top-14 left-[59.2rem] w-[15rem] px-4 py-4">
         <FormControl className="w-full">
           <div className="text-xs">
