@@ -5,8 +5,10 @@ import Header from "../header";
 import Footer from "../footer";
 import Link from "next/link";
 import { supabase } from "@/supabase/supabase";
+import { useRouter } from "next/navigation";
 
 function Cart() {
+  const Router = useRouter();
   const [cartEmpty, setCartEmpty] = useState<boolean>(false);
 
   async function cartDataFetch() {
@@ -109,7 +111,10 @@ function Cart() {
             <div className="flex w-full justify-start text-[18px]">
               Subtotal (1 item): <p className="font-bold ml-2"> $10.99</p>
             </div>
-            <span className="flex items-center justify-center w-full bg-[#FED914] hover:bg-[#fed050] my-1 p-2 text-[13px] rounded-md cursor-pointer">
+            <span
+              onClick={() => Router.push("/checkout")}
+              className="flex items-center justify-center w-full bg-[#FED914] hover:bg-[#fed050] my-1 p-2 text-[13px] rounded-md cursor-pointer"
+            >
               Proceed to checkout
             </span>
           </div>
