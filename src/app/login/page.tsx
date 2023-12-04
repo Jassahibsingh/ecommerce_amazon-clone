@@ -5,9 +5,11 @@ import { GoTriangleRight } from "react-icons/go";
 import Divider from "@mui/material/Divider";
 import { supabase } from "@/supabase/supabase";
 import { useRouter } from "next/navigation";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 function Page() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [passwordVisible, setPasswordVisible] = useState(false);
   const Router = useRouter();
   async function handleLogin() {
     const { data, error } = await supabase.auth.signInWithPassword({
@@ -18,7 +20,9 @@ function Page() {
       console.log("SignIn Error", error);
     } else {
       Router.push("/");
-      console.log("user", data);
+      sessionStorage.setItem("userEmail", data?.user?.email || "");
+      sessionStorage.setItem("userName", data?.user?.user_metadata.name || "");
+      // console.log("user", data);
     }
   }
   return (
@@ -53,13 +57,29 @@ function Page() {
               Forgot your password?
             </Link>
           </span>
-          <input
-            type="text"
-            className="font-normal border border-[#888C8C] outline:ring-cyan-400 focus:ring-opacity-100 rounded mt-1  py-[4px] px-[7px] w-full outline-none"
+          <div
             style={{ boxShadow: "0 1px 2px rgba(15,17,17,.15)" }}
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
+            className="flex relative items-center font-normal border border-[#888C8C] outline:ring-cyan-400 focus:ring-opacity-100 rounded mt-1  w-full outline-none"
+          >
+            <input
+              type={passwordVisible ? "text" : "password"}
+              className="flex w-full outline-none py-[4px] px-[7px]"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+            {passwordVisible ? (
+              <span className="absolute right-1">
+                <FaEyeSlash
+                  size={15}
+                  onClick={() => setPasswordVisible(false)}
+                />
+              </span>
+            ) : (
+              <span className="absolute right-1">
+                <FaEye size={15} onClick={() => setPasswordVisible(true)} />
+              </span>
+            )}
+          </div>
         </div>
         <span
           className="flex items-center justify-center bg-[#FED914] hover:bg-[#fed050] p-2 mt-4 text-[13px] rounded-lg cursor-pointer"

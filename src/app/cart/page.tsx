@@ -1,12 +1,26 @@
 "use client";
 import { Divider } from "@mui/material";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Header from "../header";
 import Footer from "../footer";
 import Link from "next/link";
+import { supabase } from "@/supabase/supabase";
 
 function Cart() {
   const [cartEmpty, setCartEmpty] = useState<boolean>(false);
+
+  async function cartDataFetch() {
+    const { data: cartData, error: Error } = await supabase
+      .from("user_cart")
+      .select("products")
+      .eq("users", sessionStorage.getItem("userEmail"));
+    // cartData[0].products.
+  }
+
+  useEffect(() => {
+    cartDataFetch();
+  }, []);
+
   return (
     <div className="flex flex-col bg-gray-100 min-h-screen">
       <Header />
@@ -15,7 +29,9 @@ function Cart() {
           <h1 className="text-[28px] font-medium">
             {cartEmpty ? "Your Amazon Cart is empty." : "Shopping Cart"}
           </h1>
-          <Divider className="my-3" />
+          <span className="my-3">
+            <Divider />
+          </span>
           <div>
             {cartEmpty ? (
               "Your Shopping Cart lives to serve. Give it purpose — fill it with groceries, clothing, household supplies, electronics, and more. Continue shopping on the Amazon.com homepage, learn about today's deals, or visit your Wish List."
@@ -58,7 +74,9 @@ function Cart() {
                         </option>
                       ))}
                     </select>
-                    <Divider orientation="vertical" className="mx-4 h-[15px]" />
+                    <span className="mx-4 h-[15px]">
+                      <Divider orientation="vertical" />
+                    </span>
                     <Link
                       className="text-[#007185] text-[12px] hover:text-[#f08804] hover:underline cursor-pointer"
                       href={"#"}
@@ -66,7 +84,9 @@ function Cart() {
                       {" "}
                       Delete
                     </Link>
-                    <Divider orientation="vertical" className="mx-4 h-[15px]" />
+                    <span className="mx-4 h-[15px]">
+                      <Divider orientation="vertical" />
+                    </span>
                     <Link
                       className="text-[#007185] text-[12px] hover:text-[#f08804] hover:underline cursor-pointer"
                       href={"#"}

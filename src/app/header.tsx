@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Tooltip from "@mui/material/Tooltip";
 import { AiOutlineSearch, AiFillCaretDown } from "react-icons/ai";
 import { FiMapPin, FiShoppingCart, FiMenu } from "react-icons/fi";
@@ -10,12 +10,30 @@ import Link from "next/link";
 import { useDispatch } from "react-redux";
 import { setLocModalOpen, setSidebarOpen } from "../redux/headerFuncSlices";
 import { useRouter } from "next/navigation";
+import { supabase } from "@/supabase/supabase";
 
 interface headerProps {
   handleBackdrop?: (value: boolean) => void;
 }
 
 const Header = ({ handleBackdrop }: headerProps) => {
+  const [productQty, setProductQty] = useState<number>();
+
+  async function cartDataFetch() {
+    const { data, error } = await supabase
+      .from("user_cart")
+      .select("products")
+      .eq("users", sessionStorage.getItem("userEmail"));
+    if (error) {
+      console.log("Error while fetching data", error);
+    }
+    setProductQty(data ? data[0].products.length : undefined);
+  }
+
+  useEffect(() => {
+    cartDataFetch();
+  }, []);
+
   const Router = useRouter();
   const dispatch = useDispatch();
   return (
@@ -52,6 +70,7 @@ const Header = ({ handleBackdrop }: headerProps) => {
             onClose={() => handleBackdrop && handleBackdrop(false)}
             title={"Language Selection"}
             arrow
+            placement="top"
             PopperComponent={LanguageSelector}
           >
             <div className="flex items-center px-2 py-4 text-white cursor-pointer text-sm w-[5rem] hover:outline outline-1">
@@ -75,7 +94,10 @@ const Header = ({ handleBackdrop }: headerProps) => {
               className="flex flex-col p-2 text-white cursor-pointer text-xs w-[9rem] hover:outline outline-1"
               href="/login"
             >
-              Hello, Sign In
+              Hello,{" "}
+              {sessionStorage.getItem("userName")
+                ? sessionStorage.getItem("userName")
+                : "Sign In"}
               <span className="flex items-center text-sm font-bold">
                 Account & Lists
                 <AiFillCaretDown color="#656563" size={12} />
@@ -92,7 +114,10 @@ const Header = ({ handleBackdrop }: headerProps) => {
             className="flex items-end relative px-2 py-2.5 text-white cursor-pointer text-sm hover:outline outline-1"
             onClick={() => Router.push("/cart")}
           >
-            <div className="flex flex-col items-center">
+            <div className="flex flex-col relative items-center">
+              <span className="flex items-center justify-center absolute -top-1 -left-1 text-[12px] text-black font-bold bg-[#F99B01] w-[20px] rounded-full">
+                {productQty}
+              </span>
               <FiShoppingCart size={30} />
             </div>
             Cart

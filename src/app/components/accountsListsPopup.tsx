@@ -13,7 +13,7 @@ const AccountsListsPopup = (props: any) => {
     const { error } = await supabase.auth.signOut();
   }
   return (
-    <Popper {...props} Arrow placement="bottom-start">
+    <Popper {...props} arrow placement="bottom-start">
       <div className="flex flex-col items-start justify-center bg-white absolute top-14 left-[49.2rem] w-[500px] px-4 py-4">
         <div
           className="flex justify-between bg-[#E7F4F5] rounded-[6px] text-[13px] p-[12px] cursor-pointer w-full"
