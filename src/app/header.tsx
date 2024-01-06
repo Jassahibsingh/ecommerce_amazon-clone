@@ -27,7 +27,7 @@ const Header = ({ handleBackdrop }: headerProps) => {
     if (error) {
       console.log("Error while fetching data", error);
     }
-    setProductQty(data ? data[0].products.length : undefined);
+    setProductQty(data ? data[0]?.products.length : undefined);
   }
 
   useEffect(() => {
@@ -115,9 +115,13 @@ const Header = ({ handleBackdrop }: headerProps) => {
             onClick={() => Router.push("/cart")}
           >
             <div className="flex flex-col relative items-center">
-              <span className="flex items-center justify-center absolute -top-1 -left-1 text-[12px] text-black font-bold bg-[#F99B01] w-[20px] rounded-full">
-                {productQty}
-              </span>
+              {productQty ? (
+                <span className="flex items-center justify-center absolute -top-1 -left-1 text-[12px] text-black font-bold bg-[#F99B01] w-[20px] rounded-full">
+                  {productQty}
+                </span>
+              ) : (
+                <></>
+              )}
               <FiShoppingCart size={30} />
             </div>
             Cart
