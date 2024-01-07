@@ -1,11 +1,14 @@
-import React from "react";
+"use client";
+import React, { useEffect } from "react";
 import Header from "../header";
 import Footer from "../footer";
 import { Divider } from "@mui/material";
 import { BsCheckCircleFill, BsChevronRight } from "react-icons/bs";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 function OrderSuccessPage() {
+  const Router = useRouter();
   function formatDateWithOffset(offsetDays: number): string {
     const days = [
       "Sunday",
@@ -41,6 +44,12 @@ function OrderSuccessPage() {
 
     return `${dayOfWeek}, ${date} ${month}`;
   }
+
+  useEffect(() => {
+    if (!sessionStorage.getItem("userName")) {
+      Router.push("/login");
+    }
+  }, []);
 
   return (
     <div>

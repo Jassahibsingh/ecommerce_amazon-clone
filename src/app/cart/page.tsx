@@ -67,6 +67,9 @@ function Cart() {
   }
 
   useEffect(() => {
+    if (!sessionStorage.getItem("userName")) {
+      Router.push("/login");
+    }
     cartDataFetch();
   }, []);
 

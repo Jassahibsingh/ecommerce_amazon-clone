@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { supabase } from "@/supabase/supabase";
 import Divider from "@mui/material/Divider";
@@ -7,8 +7,27 @@ import countriesList from "../countires.json";
 import CheckoutForm from "../components/StripeCheckoutModal";
 import { useRouter } from "next/navigation";
 
+interface ProductArray {
+  productid: number;
+  productimage: string;
+  rating: number;
+  price: number;
+  about: string;
+  instock: boolean;
+  heading: string;
+  quantity?: number;
+}
+
+interface ProductData {
+  productID: string;
+  quantity: number;
+}
+
 function CheckoutPage() {
   const Router = useRouter();
+  const [userCartData, setUserCartData] = useState<ProductArray[]>([]);
+  const [totalPrice, setTotalPrice] = useState<string>();
+  const [totalQty, setTotalQty] = useState<number>();
   const [visibleSection, setVisibleSection] = useState("address");
   const [formData, setFormData] = useState({
     user_email: sessionStorage.getItem("userEmail"),
@@ -39,6 +58,7 @@ function CheckoutPage() {
       setTimeout(() => setErrorMessage(""), 3000);
       return;
     }
+    setLoading(true);
 
     try {
       const { data, error } = await supabase
@@ -117,6 +137,54 @@ function CheckoutPage() {
 
     return `${date} ${month} ${year}`;
   }
+
+  async function cartDataFetch() {
+    try {
+      const { data: cartData, error: Error } = await supabase
+        .from("user_cart")
+        .select("products")
+        .eq("users", sessionStorage.getItem("userEmail"));
+
+      if (cartData && cartData[0]?.products) {
+        let totalPrice = 0,
+          totalQty = 0;
+        const productPromises = cartData[0].products.map(
+          async (product: ProductData) => {
+            const { data: productData, error: ProductError } = await supabase
+              .from("products")
+              .select("*")
+              .eq("productid", product.productID);
+
+            if (ProductError) {
+              console.log("Error while fetching products data", ProductError);
+            }
+
+            if (productData && productData.length > 0) {
+              productData[0]["quantity"] = product.quantity;
+              totalPrice += productData[0].price * product.quantity;
+              totalQty += product.quantity;
+              return productData[0];
+            }
+          }
+        );
+
+        const productsArray = await Promise.all(productPromises);
+
+        setUserCartData(productsArray);
+        setTotalPrice(totalPrice.toFixed(2));
+        setTotalQty(totalQty);
+      }
+    } catch (error) {
+      console.error("Error fetching cart data", error);
+    }
+  }
+
+  useEffect(() => {
+    if (!sessionStorage.getItem("userName")) {
+      Router.push("/login");
+    }
+    cartDataFetch();
+  }, []);
 
   return (
     <div className="flex flex-col">
@@ -259,28 +327,30 @@ function CheckoutPage() {
                     </label>
                   </span>
                   {!isLoading ? (
-                    <button
-                      className="bg-[#FED914] hover:bg-[#fed050] p-2 text-[13px] rounded-md cursor-pointer"
-                      style={{ boxShadow: "0 2px 5px 0 rgba(213,217,217,.5)" }}
-                      onClick={(e) => {
-                        e.preventDefault();
-                        handleSubmit();
-                      }}
-                      type="submit"
-                    >
-                      Use this address
-                    </button>
+                    <div className="flex items-center">
+                      <button
+                        className="bg-[#FED914] hover:bg-[#fed050] p-2 text-[13px] rounded-md cursor-pointer"
+                        style={{
+                          boxShadow: "0 2px 5px 0 rgba(213,217,217,.5)",
+                        }}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          handleSubmit();
+                        }}
+                        type="submit"
+                      >
+                        Use this address
+                      </button>
+                      <span className="flex justify-center ml-[100px] text-[#DF1B41] font-bold">
+                        {errorMessage}
+                      </span>
+                    </div>
                   ) : (
-                    <span className="flex ml-[200px]">
+                    <span className="flex ml-[20px]">
                       <img src="/loader-big.gif" className="w-[40px]" alt="" />
                     </span>
                   )}
                 </form>
-                {errorMessage && (
-                  <span className="flex justify-center mt-2 text-[#DF1B41] font-bold">
-                    {errorMessage}
-                  </span>
-                )}
               </div>
             ) : (
               <></>
@@ -373,7 +443,7 @@ function CheckoutPage() {
                   <p className="text-[#007600]">{formatDateWithOffset(4)}</p>
                 </h1>
                 <span className="text-slate-600 text-[14px]">
-                  If you order in the next 5 hours 26 minutes(
+                  If you place order in the next 5 hours 26 minutes(
                   <Link
                     className="text-[#007185] hover:text-[#f08804] hover:underline cursor-pointer"
                     href={"#"}
@@ -386,36 +456,45 @@ function CheckoutPage() {
                   Items dispatched by Amazon &nbsp;
                   <img src="/aFulfilled.png" alt="" />
                 </span>
-                <div className="flex m-4">
-                  <img src="/uno.jpg" className="w-[80px] mr-4" alt="" />
-                  <div className="flex flex-col">
-                    <h4 className="font-bold text-[14px]">
-                      Amul Camel Milk Powder : Pack of 10 Sachets 25gm Each
-                    </h4>
-                    <span className="flex text-[#CC0C39] text-[14px] my-1 font-bold">
-                      $23.99 &nbsp;
-                      <img src="/aFulfilled.png" alt="" />
-                    </span>
-                    <span className="flex items-center">
-                      Qty:
-                      <select
-                        className="w-[50px] border bg-[#F0F2F2] border-[#D5D9D9] hover:bg-[#e9e9e9] text-[13px] focus:ring-cyan-400 focus:ring-opacity-100 rounded-lg py-[5px] px-[7px] outline-none"
-                        style={{
-                          boxShadow: "0 2px 5px 0 rgba(213,217,217,.5)",
-                        }}
-                        name="Quantity"
-                        id=""
-                        defaultValue={1}
-                      >
-                        {Array.from({ length: 30 }, (_, i) => (
-                          <option key={i} value={i + 1}>
-                            {i + 1}
-                          </option>
-                        ))}
-                      </select>
-                    </span>
+                {userCartData.map((product: ProductArray, id: number) => (
+                  <div key={id} className="flex m-4 space-y-1">
+                    <img
+                      src={product.productimage}
+                      className="w-[80px] mr-4"
+                      alt=""
+                    />
+                    <div className="flex flex-col">
+                      <h4 className="font-bold text-[14px]">
+                        {product.heading.length > 140
+                          ? product.heading.substring(0, 140) + "..."
+                          : product.heading}
+                      </h4>
+                      <span className="flex text-[#CC0C39] text-[14px] my-1 font-bold">
+                        ${product.price} &nbsp;
+                        <img src="/aFulfilled.png" alt="" />
+                      </span>
+                      <span className="flex items-center">
+                        Qty:
+                        <select
+                          className="w-[55px] border bg-[#F0F2F2] border-[#D5D9D9] hover:bg-[#e9e9e9] text-[13px] focus:ring-cyan-400 focus:ring-opacity-100 rounded-lg py-[5px] px-[7px] outline-none"
+                          style={{
+                            boxShadow: "0 2px 5px 0 rgba(213,217,217,.5)",
+                          }}
+                          name="Quantity"
+                          id=""
+                          defaultValue={1}
+                          value={product.quantity}
+                        >
+                          {Array.from({ length: 30 }, (_, i) => (
+                            <option key={i} value={i + 1}>
+                              {i + 1}
+                            </option>
+                          ))}
+                        </select>
+                      </span>
+                    </div>
                   </div>
-                </div>
+                ))}
                 <span
                   className={`bg-[#FED914] hover:bg-[#fed050] p-2 text-[13px] ${
                     selectedPaymentOption === "cod" ? "w-[120px]" : "w-[160px]"
@@ -443,7 +522,27 @@ function CheckoutPage() {
         </div>
         <div className="flex top-4 sticky flex-col w-[300px] max-h-[354px] min-h-[354px] bg-white rounded-lg border border-[#ddd] mt-2 mb-[22px]">
           <div className="p-[20px]">
-            <span className="flex items-center justify-center w-full bg-[#FED914] hover:bg-[#fed050] my-1 p-2 text-[13px] rounded-md cursor-pointer">
+            <span
+              onClick={() => {
+                if (visibleSection === "address") {
+                  handleSubmit();
+                }
+
+                if (visibleSection === "paymentMethod") {
+                  selectedPaymentOption === "cod"
+                    ? setButtonText("Place your order")
+                    : setButtonText("Place your order & Pay");
+                  setVisibleSection("placeOrder");
+                }
+
+                if (visibleSection === "placeOrder") {
+                  selectedPaymentOption === "cod"
+                    ? Router.push("/orderComplete")
+                    : setShowPaymentModal(true);
+                }
+              }}
+              className="flex items-center justify-center w-full bg-[#FED914] hover:bg-[#fed050] my-1 p-2 text-[13px] rounded-md cursor-pointer"
+            >
               {buttonText}
             </span>
             <p className="text-[12px] mb-2">{orderDesc}</p>
@@ -461,7 +560,7 @@ function CheckoutPage() {
               <tbody className="text-[12px] w-full">
                 <tr className="w-full">
                   <td className="w-[150px]">Items:</td>
-                  <td className="flex justify-end w-[100px]">---</td>
+                  <td className="flex justify-end w-[100px]">{totalQty}</td>
                 </tr>
                 <tr className="">
                   <td className="w-[150px]">Shipping:</td>
@@ -469,7 +568,7 @@ function CheckoutPage() {
                 </tr>
                 <tr className="">
                   <td className="w-[150px]">Total:</td>
-                  <td className="flex justify-end w-[100px]">---</td>
+                  <td className="flex justify-end w-[100px]">{totalPrice}</td>
                 </tr>
               </tbody>
             </table>
@@ -478,7 +577,7 @@ function CheckoutPage() {
             </span>
             <span className="flex justify-between w-full text-[16px] text-[#B12704] font-bold mt-2">
               <p>Order total:</p>
-              <p>$10.99</p>
+              <p>${totalPrice}</p>
             </span>
           </div>
           <div className="flex w-full bg-gray-200 py-5 px-4">
