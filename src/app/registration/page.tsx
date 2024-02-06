@@ -1,21 +1,37 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { GoTriangleRight } from "react-icons/go";
 import Divider from "@mui/material/Divider";
 import { supabase } from "@/supabase/supabase";
 import { BsCheckCircleFill, BsInfo } from "react-icons/bs";
+import { CiWarning } from "react-icons/ci";
 
 function Register() {
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [err, setErr] = useState(false);
+  const [errMsg, setErrMsg] = useState("");
+  const [isLoading, setLoading] = useState(false);
   const [registerEmailSent, setRegisterEmailSent] = useState(false);
 
   async function handleRegistration() {
+    setLoading(true);
+    if (
+      email === "" ||
+      name === "" ||
+      password === "" ||
+      confirmPassword === ""
+    ) {
+      setErrMsg("Please fill in all the fields");
+      setLoading(false);
+      return;
+    }
     if (password !== confirmPassword) {
-      alert("Passwords do not match");
+      setErrMsg("Passwords do not match");
+      setLoading(false);
       return;
     }
     const { data, error } = await supabase.auth.signUp({
@@ -30,11 +46,17 @@ function Register() {
     });
     if (error) {
       console.log("Registration Error", error);
+      setLoading(false);
+      setErr(true);
     } else {
+      setErr(false);
       setRegisterEmailSent(true);
       console.log("user", data);
     }
   }
+  useEffect(() => {
+    setErrMsg("");
+  }, [email, password, confirmPassword, name]);
   return (
     <div className="flex flex-col items-center justify-center">
       <div className="flex items-center justify-center m-4">
@@ -44,6 +66,21 @@ function Register() {
           alt="Amazon Logo"
         />
       </div>
+      {err ? (
+        <div className="flex items-start mb-4 p-4 w-[350px] border border-[#CC0C39] rounded-lg">
+          <CiWarning color="#CC0C39" size={35} />
+          <div className="flex flex-col justify-center ml-2">
+            <p className="text-[16px] text-[#CC0C39] font-semibold">
+              There was a problem
+            </p>
+            <p className="text-[12px] font-medium leading-7">
+              An error occured. Please try again.
+            </p>
+          </div>
+        </div>
+      ) : (
+        <></>
+      )}
       {!registerEmailSent ? (
         <div className="flex flex-col w-[350px] rounded-lg border border-[#ddd] p-[20px] mb-[22px]">
           <div className="font-normal text-[26px] mb-[10px]">
@@ -97,13 +134,21 @@ function Register() {
               onChange={(e) => setConfirmPassword(e.target.value)}
             />
           </div>
-          <span
-            className="flex items-center justify-center bg-[#FED914] hover:bg-[#fed050] p-2 mt-4 text-[13px] rounded-lg cursor-pointer"
+          <p className="flex items-center justify-center text-[14px] text-[#CC0C39] font-semibold">
+            {errMsg}
+          </p>
+          <button
+            className={`flex items-center justify-center ${
+              isLoading
+                ? "bg-[#FED]"
+                : "bg-[#FED914] hover:bg-[#fed050] cursor-pointer"
+            } p-2 mt-4 text-[13px] rounded-lg`}
             onClick={handleRegistration}
+            disabled={isLoading}
           >
             Continue
-          </span>
-          <Divider className="text-[12px] my-3" variant="middle">
+          </button>
+          {/* <Divider className="text-[12px] my-3" variant="middle">
             or
           </Divider>
           <div
@@ -112,7 +157,7 @@ function Register() {
           >
             SignUp with Google
             <img src="/Google.jpg" className="w-[40px]" alt="" />
-          </div>
+          </div> */}
           <div className="text-[11px] mt-6">
             By creating an account, you agree to Amazon&apos;s
             <br />

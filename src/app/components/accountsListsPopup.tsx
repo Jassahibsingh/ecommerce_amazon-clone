@@ -11,6 +11,12 @@ const AccountsListsPopup = (props: any) => {
   const router = useRouter();
   async function signOut() {
     const { error } = await supabase.auth.signOut();
+    if (error) {
+      console.log(error);
+    } else {
+      sessionStorage.removeItem("userEmail");
+      sessionStorage.removeItem("userName");
+    }
   }
   return (
     <Popper {...props} arrow placement="bottom-start">

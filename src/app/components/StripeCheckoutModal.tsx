@@ -6,6 +6,7 @@ import {
 } from "@stripe/react-stripe-js";
 import { StripePaymentElementOptions } from "@stripe/stripe-js";
 import Modal from "react-modal";
+import { supabase } from "@/supabase/supabase";
 
 interface CheckoutFormProps {
   showPaymentModal: boolean;
@@ -37,16 +38,31 @@ export default function CheckoutForm({
       return;
     }
 
-    stripe.retrievePaymentIntent(clientSecret).then(({ paymentIntent }) => {
-      switch (paymentIntent?.status) {
-        case "processing":
-          setMessage("Your payment is processing.");
-          break;
-        case "requires_payment_method":
-          setMessage("Your payment was not successful, please try again.");
-          break;
-      }
-    });
+    stripe
+      .retrievePaymentIntent(clientSecret)
+      .then(async ({ paymentIntent }) => {
+        switch (paymentIntent?.status) {
+          case "processing":
+            setMessage("Your payment is processing.");
+            break;
+          case "requires_payment_method":
+            setMessage("Your payment was not successful, please try again.");
+            break;
+          case "succeeded":
+            const { data, error } = await supabase
+              .from("user_cart")
+              .delete()
+              .eq("users", sessionStorage.getItem("userEmail") || "");
+
+            if (error) {
+              console.error("Error while deleting from user_cart", error);
+            } else {
+              console.log("Data deleted successfully", data);
+            }
+
+            setMessage("Payment successful! Order complete.");
+        }
+      });
   }, [stripe]);
 
   React.useEffect(() => {
@@ -65,14 +81,18 @@ export default function CheckoutForm({
     const { error } = await stripe.confirmPayment({
       elements,
       confirmParams: {
-        return_url: "http://localhost:3000/orderComplete",
+        return_url: "http://localhost:3000/order-complete",
       },
     });
+
     console.log("Payment Confirmation Error:", error);
-    if (error.type === "card_error" || error.type === "validation_error") {
-      setMessage(error.message);
-    } else {
-      setMessage("An unexpected error occurred.");
+
+    if (error) {
+      if (error.type === "card_error" || error.type === "validation_error") {
+        setMessage(error.message);
+      } else {
+        setMessage("An unexpected error occurred.");
+      }
     }
   };
 

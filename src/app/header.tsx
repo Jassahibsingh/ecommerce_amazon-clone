@@ -7,16 +7,30 @@ import LanguageSelector from "./components/languageSelector";
 import { Backdrop } from "@mui/material";
 import AccountsListsPopup from "./components/accountsListsPopup";
 import Link from "next/link";
-import { useDispatch } from "react-redux";
-import { setLocModalOpen, setSidebarOpen } from "../redux/headerFuncSlices";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  setBackdropOpen,
+  setLocModalOpen,
+  setSidebarOpen,
+} from "../redux/headerFuncSlices";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/supabase/supabase";
+import LocationModal from "./components/locationModal";
+import SidebarMenu from "./components/sidebarMenu";
+import { RootState } from "@/redux/store";
 
-interface headerProps {
-  handleBackdrop?: (value: boolean) => void;
-}
+const Header = () => {
+  const Router = useRouter();
+  const dispatch = useDispatch();
 
-const Header = ({ handleBackdrop }: headerProps) => {
+  const isSidebarOpen = useSelector(
+    (state: RootState) => state.header.isSidebarOpen
+  );
+
+  const isBackdropOpen = useSelector(
+    (state: RootState) => state.header.isBackdropOpen
+  );
+
   const [productQty, setProductQty] = useState<number>();
 
   async function cartDataFetch() {
@@ -30,12 +44,46 @@ const Header = ({ handleBackdrop }: headerProps) => {
     setProductQty(data ? data[0]?.products.length : undefined);
   }
 
+  function handleBackdrop(open: boolean) {
+    dispatch(setBackdropOpen(open));
+    if (open && isSidebarOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "auto";
+    }
+  }
+
   useEffect(() => {
+    supabase
+      .channel("user_cart")
+      .on(
+        "postgres_changes",
+        { event: "INSERT", schema: "public", table: "user_cart" },
+        cartDataFetch
+      )
+      .on(
+        "postgres_changes",
+        { event: "DELETE", schema: "public", table: "user_cart" },
+        cartDataFetch
+      )
+      .on(
+        "postgres_changes",
+        { event: "UPDATE", schema: "public", table: "user_cart" },
+        cartDataFetch
+      )
+      .subscribe();
+
     cartDataFetch();
   }, []);
 
-  const Router = useRouter();
-  const dispatch = useDispatch();
+  useEffect(() => {
+    if (isSidebarOpen) {
+      handleBackdrop(true);
+    } else {
+      handleBackdrop(false);
+    }
+  }, [isSidebarOpen]);
+
   return (
     <header className="flex flex-col bg-[#131920] w-full">
       <div className="flex items-center z-30">
@@ -115,7 +163,7 @@ const Header = ({ handleBackdrop }: headerProps) => {
             onClick={() => Router.push("/cart")}
           >
             <div className="flex flex-col relative items-center">
-              {productQty ? (
+              {productQty && sessionStorage.getItem("userEmail") ? (
                 <span className="flex items-center justify-center absolute -top-1 -left-1 text-[12px] text-black font-bold bg-[#F99B01] w-[20px] rounded-full">
                   {productQty}
                 </span>
@@ -154,6 +202,24 @@ const Header = ({ handleBackdrop }: headerProps) => {
           Sell
         </div>
       </div>
+      <LocationModal />
+      <div
+        className="absolute top-0 left-0 z-40"
+        style={{
+          transform: isSidebarOpen ? "translateX(0)" : "translateX(-100%)",
+          transition: "transform 0.3s ease-in-out",
+        }}
+      >
+        <SidebarMenu />
+      </div>
+      <Backdrop
+        sx={{ color: "#fff", zIndex: isSidebarOpen ? 30 : 20 }}
+        open={isBackdropOpen}
+        onClick={() => {
+          handleBackdrop(false);
+          dispatch(setSidebarOpen(false));
+        }}
+      />
     </header>
   );
 };

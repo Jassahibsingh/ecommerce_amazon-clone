@@ -1,11 +1,12 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import Link from "next/link";
 import { supabase } from "@/supabase/supabase";
+import { useRouter } from "next/navigation";
+import { v4 as uuidv4 } from "uuid";
+import Link from "next/link";
 import Divider from "@mui/material/Divider";
 import countriesList from "../countires.json";
 import CheckoutForm from "../components/StripeCheckoutModal";
-import { useRouter } from "next/navigation";
 
 interface ProductArray {
   productid: number;
@@ -25,6 +26,7 @@ interface ProductData {
 
 function CheckoutPage() {
   const Router = useRouter();
+  const orderID = uuidv4();
   const [userCartData, setUserCartData] = useState<ProductArray[]>([]);
   const [totalPrice, setTotalPrice] = useState<string>();
   const [totalQty, setTotalQty] = useState<number>();
@@ -37,7 +39,7 @@ function CheckoutPage() {
     city: "",
     state: "",
     zipcode: "",
-    country: "",
+    country: countriesList.countries[76],
   });
   const [isLoading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
@@ -179,6 +181,45 @@ function CheckoutPage() {
     }
   }
 
+  async function placeOrder() {
+    const updatedProducts: ProductData[] = userCartData.map((product) => ({
+      productID: String(product.productid),
+      quantity: product.quantity || 0,
+    }));
+
+    const { data: orderHistory, error: orderHistoryError } = await supabase
+      .from("order_history")
+      .upsert([
+        {
+          users: sessionStorage.getItem("userEmail") || "",
+          products: updatedProducts,
+          order_id: orderID,
+          order_total: totalPrice,
+          order_completion_date: formatDateWithOffset(0),
+          delivery_date: formatDateWithOffset(4),
+        },
+      ]);
+
+    if (orderHistoryError) {
+      console.log("Error while adding to cart", orderHistoryError);
+      return;
+    } else {
+      console.log("Cart Data updated successfully", orderHistory);
+    }
+
+    const { data, error } = await supabase
+      .from("user_cart")
+      .delete()
+      .eq("users", sessionStorage.getItem("userEmail") || "");
+
+    if (error) {
+      console.error("Error while deleting from user_cart", error);
+    } else {
+      console.log("Data deleted successfully", data);
+      Router.push(`/order-complete?order_id=${orderID}`);
+    }
+  }
+
   useEffect(() => {
     if (!sessionStorage.getItem("userName")) {
       Router.push("/login");
@@ -226,7 +267,7 @@ function CheckoutPage() {
                       style={{ boxShadow: "0 2px 5px 0 rgba(213,217,217,.5)" }}
                       name="Country"
                       id=""
-                      defaultValue={countriesList.countries[76]}
+                      value={formData.country}
                       onChange={(e) =>
                         setFormData({ ...formData, country: e.target.value })
                       }
@@ -502,7 +543,7 @@ function CheckoutPage() {
                   style={{ boxShadow: "0 2px 5px 0 rgba(213,217,217,.5)" }}
                   onClick={() => {
                     selectedPaymentOption === "cod"
-                      ? Router.push("/orderComplete")
+                      ? placeOrder()
                       : setShowPaymentModal(true);
                   }}
                 >
@@ -537,7 +578,7 @@ function CheckoutPage() {
 
                 if (visibleSection === "placeOrder") {
                   selectedPaymentOption === "cod"
-                    ? Router.push("/orderComplete")
+                    ? placeOrder()
                     : setShowPaymentModal(true);
                 }
               }}
