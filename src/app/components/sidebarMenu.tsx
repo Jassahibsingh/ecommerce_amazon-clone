@@ -8,19 +8,33 @@ import { CiGlobe } from "react-icons/ci";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
 import { setSidebarOpen } from "../../redux/headerFuncSlices";
+import { supabase } from "@/supabase/supabase";
+import { useRouter } from "next/navigation";
 
 function SidebarMenu() {
+  const Router = useRouter();
   const dispatch = useDispatch();
   const isSidebarOpen = useSelector(
     (state: RootState) => state.header.isSidebarOpen
   );
-
+  async function signOut() {
+    const { error } = await supabase.auth.signOut();
+    if (error) {
+      console.log(error);
+    } else {
+      sessionStorage.removeItem("userEmail");
+      sessionStorage.removeItem("userName");
+    }
+  }
   return (
     <div className="flex relative w-[370px] bg-white">
       <div className="w-full">
         <div className="flex items-center bg-[#232F3E] text-white p-3 text-lg font-bold">
           <FaUserCircle size={25} className="mr-3 ml-5" />
-          Hello, Jassahib
+          Hello,{" "}
+          {sessionStorage.getItem("userName")
+            ? sessionStorage.getItem("userName")
+            : "Sign In"}
         </div>
         <div
           className="overflow-y-scroll"
@@ -99,7 +113,10 @@ function SidebarMenu() {
             <li className="flex items-center justify-between text-sm hover:bg-slate-200 pl-9 pr-7 py-[10px]">
               Customer Service
             </li>
-            <li className="flex items-center justify-between text-sm hover:bg-slate-200 pl-9 pr-7 py-[10px]">
+            <li
+              onClick={signOut}
+              className="flex items-center justify-between text-sm hover:bg-slate-200 pl-9 pr-7 py-[10px]"
+            >
               Sign Out
             </li>
           </ul>

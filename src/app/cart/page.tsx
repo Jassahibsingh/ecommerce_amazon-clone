@@ -15,7 +15,7 @@ interface ProductArray {
   about: string;
   instock: boolean;
   heading: string;
-  quantity?: number;
+  quantity: number;
 }
 
 interface ProductData {
@@ -24,6 +24,7 @@ interface ProductData {
 }
 
 function Cart() {
+  const date = new Date();
   const Router = useRouter();
   const [userCartData, setUserCartData] = useState<ProductArray[]>([]);
   const [totalPrice, setTotalPrice] = useState<string>();
@@ -66,11 +67,52 @@ function Cart() {
     }
   }
 
+  async function deleteFromCart(productID: number) {
+    const updatedCartData = userCartData.filter(
+      (item) => item.productid !== productID
+    );
+    setUserCartData(updatedCartData);
+    let totalPrice = 0;
+
+    if (updatedCartData && updatedCartData.length > 0) {
+      updatedCartData.map(
+        (product: ProductArray) =>
+          (totalPrice += product.quantity * product.price)
+      );
+    }
+    setTotalPrice(totalPrice.toFixed(2));
+
+    const updatedProducts: ProductData[] = updatedCartData.map((product) => ({
+      productID: String(product.productid),
+      quantity: product.quantity || 0,
+    }));
+
+    const { data, error } = await supabase.from("user_cart").upsert([
+      {
+        users: sessionStorage.getItem("userEmail") || "",
+        products: updatedProducts,
+      },
+    ]);
+
+    if (error) {
+      console.log("Error while adding to cart", error);
+    } else {
+      console.log("Cart Data updated successfully", data);
+    }
+  }
+
   useEffect(() => {
     if (!sessionStorage.getItem("userName")) {
       Router.push("/login");
     }
     cartDataFetch();
+    console.log(userCartData);
+    console.log(
+      date.getDay(),
+      date.getDate(),
+      date.getMonth() + 1,
+      date.getFullYear()
+    );
   }, []);
 
   return (
@@ -126,7 +168,6 @@ function Cart() {
                           }}
                           name="Country"
                           id=""
-                          defaultValue={1}
                           value={product.quantity}
                         >
                           {Array.from({ length: 30 }, (_, i) => (
@@ -138,13 +179,13 @@ function Cart() {
                         <span className="mx-4 h-[15px]">
                           <Divider orientation="vertical" />
                         </span>
-                        <Link
+                        <button
                           className="text-[#007185] text-[12px] hover:text-[#f08804] hover:underline cursor-pointer"
-                          href={"#"}
+                          onClick={() => deleteFromCart(product.productid)}
                         >
                           {" "}
                           Delete
-                        </Link>
+                        </button>
                         <span className="mx-4 h-[15px]">
                           <Divider orientation="vertical" />
                         </span>

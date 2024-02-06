@@ -20,7 +20,6 @@ export function Providers({ children }: { children: React.ReactNode }) {
     fetch("/api/create-checkout-session", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ items: [{ id: "xl-tshirt" }] }),
     })
       .then((res) => res.json())
       .then((data) => setClientSecret(data.clientSecret));
