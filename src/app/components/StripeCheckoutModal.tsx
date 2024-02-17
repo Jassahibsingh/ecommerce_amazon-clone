@@ -9,21 +9,19 @@ import Modal from "react-modal";
 import { supabase } from "@/supabase/supabase";
 
 interface CheckoutFormProps {
+  orderID: string;
   showPaymentModal: boolean;
-  setShowPaymentModal: (value: boolean) => void;
 }
 
 export default function CheckoutForm({
+  orderID,
   showPaymentModal,
-  setShowPaymentModal,
 }: CheckoutFormProps) {
   const stripe = useStripe();
   const elements = useElements();
 
   const [message, setMessage] = React.useState<string | undefined>("");
-  const [isLoading, setIsLoading] = React.useState(true);
-
-  const closeModal: any = () => setShowPaymentModal(false);
+  const [isLoading, setIsLoading] = React.useState(false);
 
   React.useEffect(() => {
     if (!stripe) {
@@ -77,23 +75,23 @@ export default function CheckoutForm({
     if (!stripe || !elements) {
       return;
     }
+    setIsLoading(true);
 
     const { error } = await stripe.confirmPayment({
       elements,
       confirmParams: {
-        return_url: "http://localhost:3000/order-complete",
+        return_url: `http://localhost:3000/order-complete?order_id=${orderID}`,
       },
     });
-
-    console.log("Payment Confirmation Error:", error);
-
     if (error) {
+      setIsLoading(false);
       if (error.type === "card_error" || error.type === "validation_error") {
         setMessage(error.message);
       } else {
         setMessage("An unexpected error occurred.");
       }
     }
+    console.log("Payment Confirmation Error:", error);
   };
 
   const paymentElementOptions: StripePaymentElementOptions = {
@@ -103,7 +101,6 @@ export default function CheckoutForm({
   return (
     <Modal
       isOpen={showPaymentModal}
-      onRequestClose={closeModal}
       style={{
         content: {
           top: "50%",
@@ -134,9 +131,13 @@ export default function CheckoutForm({
         <span className="flex items-center justify-end p-2">
           {stripe && elements ? (
             <button
-              className="flex items-center justify-center bg-[#FED914] hover:bg-[#fed050] p-2 mt-2 text-[13px] w-[120px] rounded-md cursor-pointer"
+              className={`flex items-center justify-center ${
+                isLoading
+                  ? "bg-[#fed] text-slate-500"
+                  : "bg-[#FED914] hover:bg-[#fed050] text-black"
+              } p-2 mt-2 text-[13px] w-[120px] rounded-md cursor-pointer`}
               style={{ boxShadow: "0 2px 5px 0 rgba(213,217,217,.5)" }}
-              disabled={!stripe || !elements}
+              disabled={!stripe || !elements || isLoading}
               id="submit"
             >
               Pay now

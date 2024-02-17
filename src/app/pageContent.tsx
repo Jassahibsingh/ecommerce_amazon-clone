@@ -38,6 +38,7 @@ function PageContent() {
   const [movieSlider, setMovieSlider] = useState<SliderArray[]>([]);
   const [bookSlider, setBookSlider] = useState<SliderArray[]>([]);
   const [toySlider, setToySlider] = useState<SliderArray[]>([]);
+  const [isLoading, setLoading] = useState<boolean>(true);
   const sliderRef = useRef<Slider | null>(null);
 
   const nextImg = () => {
@@ -60,11 +61,15 @@ function PageContent() {
       const { data, error } = await supabase.from("carousel").select("*");
       if (data) {
         setCarouselImg(data);
-      } else {
-        return error;
+        setLoading(false);
+      }
+      if (error) {
+        setLoading(false);
+        throw error;
       }
     } catch (error) {
-      console.log(error);
+      setLoading(false);
+      console.log("err", error);
     }
   }
 
@@ -73,11 +78,15 @@ function PageContent() {
       const { data, error } = await supabase.from("cards").select("*");
       if (data) {
         setProductCardInfo(data);
-      } else {
-        return error;
+        setLoading(false);
+      }
+      if (error) {
+        setLoading(false);
+        throw error;
       }
     } catch (error) {
-      console.log(error);
+      setLoading(false);
+      console.log("err", error);
     }
   }
 
@@ -86,11 +95,15 @@ function PageContent() {
       const { data, error } = await supabase.from("cards2").select("*");
       if (data) {
         setProductCard2Info(data);
-      } else {
-        return error;
+        setLoading(false);
+      }
+      if (error) {
+        setLoading(false);
+        throw error;
       }
     } catch (error) {
-      console.log(error);
+      setLoading(false);
+      console.log("err", error);
     }
   }
 
@@ -99,11 +112,15 @@ function PageContent() {
       const { data, error } = await supabase.from("cards3").select("*");
       if (data) {
         setProductCard3Info(data);
-      } else {
-        return error;
+        setLoading(false);
+      }
+      if (error) {
+        setLoading(false);
+        throw error;
       }
     } catch (error) {
-      console.log(error);
+      setLoading(false);
+      console.log("err", error);
     }
   }
 
@@ -112,9 +129,14 @@ function PageContent() {
       const { data, error } = await supabase.from("product_slider").select("*");
       if (data) {
         setSliderImages(data);
+        setLoading(false);
       }
-      if (error) throw error;
+      if (error) {
+        setLoading(false);
+        throw error;
+      }
     } catch (error) {
+      setLoading(false);
       console.log("err", error);
     }
   }
@@ -124,21 +146,32 @@ function PageContent() {
       const { data, error } = await supabase.from("movie_slider").select("*");
       if (data) {
         setMovieSlider(data);
+        setLoading(false);
       }
-      if (error) throw error;
+      if (error) {
+        setLoading(false);
+        throw error;
+      }
     } catch (error) {
+      setLoading(false);
       console.log("err", error);
     }
   }
 
   async function getBookSlider() {
+    setLoading(true);
     try {
       const { data, error } = await supabase.from("book_slider").select("*");
       if (data) {
         setBookSlider(data);
+        setLoading(false);
       }
-      if (error) throw error;
+      if (error) {
+        setLoading(false);
+        throw error;
+      }
     } catch (error) {
+      setLoading(false);
       console.log("err", error);
     }
   }
@@ -148,9 +181,14 @@ function PageContent() {
       const { data, error } = await supabase.from("toy_slider").select("*");
       if (data) {
         setToySlider(data);
+        setLoading(false);
       }
-      if (error) throw error;
+      if (error) {
+        setLoading(false);
+        throw error;
+      }
     } catch (error) {
+      setLoading(false);
       console.log("err", error);
     }
   }
@@ -166,7 +204,11 @@ function PageContent() {
     getToySlider();
   }, []);
 
-  return (
+  return isLoading ? (
+    <div className="flex items-center justify-center w-full p-56">
+      <img src="/loader-big.gif" />
+    </div>
+  ) : (
     <div className="flex flex-col w-full items-center select-none">
       <div className="w-full overflow-hidden absolute">
         <Slider {...settings} ref={sliderRef}>

@@ -7,6 +7,9 @@ import Link from "next/link";
 import Divider from "@mui/material/Divider";
 import countriesList from "../countires.json";
 import CheckoutForm from "../components/StripeCheckoutModal";
+import { setProductData } from "@/redux/productSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
 
 interface ProductArray {
   productid: number;
@@ -27,6 +30,7 @@ interface ProductData {
 function CheckoutPage() {
   const Router = useRouter();
   const orderID = uuidv4();
+  const dispatch = useDispatch();
   const [userCartData, setUserCartData] = useState<ProductArray[]>([]);
   const [totalPrice, setTotalPrice] = useState<string>();
   const [totalQty, setTotalQty] = useState<number>();
@@ -182,43 +186,17 @@ function CheckoutPage() {
   }
 
   async function placeOrder() {
-    const updatedProducts: ProductData[] = userCartData.map((product) => ({
-      productID: String(product.productid),
-      quantity: product.quantity || 0,
-    }));
-
-    const { data: orderHistory, error: orderHistoryError } = await supabase
-      .from("order_history")
-      .upsert([
-        {
-          users: sessionStorage.getItem("userEmail") || "",
-          products: updatedProducts,
-          order_id: orderID,
-          order_total: totalPrice,
-          order_completion_date: formatDateWithOffset(0),
-          delivery_date: formatDateWithOffset(4),
-        },
-      ]);
-
-    if (orderHistoryError) {
-      console.log("Error while adding to cart", orderHistoryError);
-      return;
-    } else {
-      console.log("Cart Data updated successfully", orderHistory);
-    }
-
-    const { data, error } = await supabase
-      .from("user_cart")
-      .delete()
-      .eq("users", sessionStorage.getItem("userEmail") || "");
-
-    if (error) {
-      console.error("Error while deleting from user_cart", error);
-    } else {
-      console.log("Data deleted successfully", data);
+    dispatch(setProductData(userCartData));
+    if (selectedPaymentOption === "cod") {
       Router.push(`/order-complete?order_id=${orderID}`);
+    } else {
+      setShowPaymentModal(true);
     }
   }
+  const productDataList = useSelector((state: RootState) => state.product);
+  useEffect(() => {
+    console.log("Product data list", productDataList);
+  }, [productDataList]);
 
   useEffect(() => {
     if (!sessionStorage.getItem("userName")) {
@@ -541,11 +519,7 @@ function CheckoutPage() {
                     selectedPaymentOption === "cod" ? "w-[120px]" : "w-[160px]"
                   } rounded-md cursor-pointer`}
                   style={{ boxShadow: "0 2px 5px 0 rgba(213,217,217,.5)" }}
-                  onClick={() => {
-                    selectedPaymentOption === "cod"
-                      ? placeOrder()
-                      : setShowPaymentModal(true);
-                  }}
+                  onClick={placeOrder}
                 >
                   {selectedPaymentOption === "cod"
                     ? "Place your order"
@@ -556,12 +530,9 @@ function CheckoutPage() {
               <></>
             )}
           </div>
-          <CheckoutForm
-            showPaymentModal={showPaymentModal}
-            setShowPaymentModal={setShowPaymentModal}
-          />
+          <CheckoutForm orderID={orderID} showPaymentModal={showPaymentModal} />
         </div>
-        <div className="flex top-4 sticky flex-col w-[300px] max-h-[354px] min-h-[354px] bg-white rounded-lg border border-[#ddd] mt-2 mb-[22px]">
+        <div className="flex top-4 sticky flex-col justify-between max-h-[350px] w-[300px] bg-white rounded-lg border border-[#ddd] mt-2 mb-[22px]">
           <div className="p-[20px]">
             <span
               onClick={() => {
@@ -577,9 +548,8 @@ function CheckoutPage() {
                 }
 
                 if (visibleSection === "placeOrder") {
-                  selectedPaymentOption === "cod"
-                    ? placeOrder()
-                    : setShowPaymentModal(true);
+                  dispatch(setProductData(userCartData));
+                  // placeOrder();
                 }
               }}
               className="flex items-center justify-center w-full bg-[#FED914] hover:bg-[#fed050] my-1 p-2 text-[13px] rounded-md cursor-pointer"
@@ -621,7 +591,7 @@ function CheckoutPage() {
               <p>${totalPrice}</p>
             </span>
           </div>
-          <div className="flex w-full bg-gray-200 py-5 px-4">
+          <div className="flex items-center w-full bg-gray-200 py-5 px-4">
             <Link
               className="flex items-center text-[12px] text-[#007185] hover:text-[#f08804] hover:underline cursor-pointer"
               href={"#"}

@@ -1,14 +1,27 @@
-import { configureStore } from "@reduxjs/toolkit";
+import { configureStore, combineReducers } from "@reduxjs/toolkit";
+import { persistReducer, persistStore } from "redux-persist";
+import storage from "redux-persist/lib/storage";
 import productSlice from "./productSlice";
 import headerFuncSlices from "./headerFuncSlices";
 
-export function makeStore() {
-  return configureStore({
-    reducer: { product: productSlice, header: headerFuncSlices },
-  });
-}
+const rootReducer = combineReducers({
+  product: productSlice,
+  header: headerFuncSlices,
+});
 
-export const store = makeStore();
+const persistConfig = {
+  key: "root",
+  storage,
+  whitelist: ["product"],
+};
 
-export type RootState = ReturnType<typeof store.getState>;
+const persistedReducer = persistReducer(persistConfig, rootReducer);
+
+export const store = configureStore({
+  reducer: persistedReducer,
+});
+
+export const persistor = persistStore(store);
+
+export type RootState = ReturnType<typeof rootReducer>;
 export type AppDispatch = typeof store.dispatch;
