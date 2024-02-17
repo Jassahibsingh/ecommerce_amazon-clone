@@ -52,7 +52,10 @@ function OrderSuccessPage() {
 
   const productDataList = useSelector((state: RootState) => state.product);
 
-  function formatDateWithOffset(offsetDays: number): string {
+  function formatDateWithOffset(
+    offsetDays: number,
+    yearRequired?: boolean
+  ): string {
     const days = [
       "Sunday",
       "Monday",
@@ -84,7 +87,11 @@ function OrderSuccessPage() {
     const dayOfWeek = days[targetDate.getDay()];
     const month = months[targetDate.getMonth()];
     const date = targetDate.getDate();
+    const year = targetDate.getFullYear();
 
+    if (yearRequired) {
+      return `${date} ${month} ${year}`;
+    }
     return `${dayOfWeek}, ${date} ${month}`;
   }
 
@@ -151,8 +158,8 @@ function OrderSuccessPage() {
               products: updatedProducts,
               order_id: orderID,
               order_total: totalPrice,
-              order_completion_date: formatDateWithOffset(0),
-              delivery_date: formatDateWithOffset(4),
+              order_completion_date: formatDateWithOffset(0, true),
+              delivery_date: formatDateWithOffset(4, true),
             },
           ]);
 
