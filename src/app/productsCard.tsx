@@ -14,13 +14,13 @@ function ProductsCard({ heading, image, url, urlText }: cardInfo) {
       <div className="font-bold text-xl">{heading}</div>
       <div
         className={`mt-3 w-full ${
-          heading.length < 30 ? "h-[19rem] mb-3" : "h-[17rem] mb-4"
+          heading.length < 25 ? "h-[19rem] mb-3" : "h-[17rem] mb-4"
         } object-cover`}
       >
         <img
           src={image}
           className={`object-cover ${
-            heading.length < 30 ? "h-[305px]" : "h-[278px]"
+            heading.length < 25 ? "h-[305px]" : "h-[278px]"
           }`}
         />
       </div>

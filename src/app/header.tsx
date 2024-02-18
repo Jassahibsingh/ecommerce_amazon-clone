@@ -108,7 +108,10 @@ const Header = () => {
             className="w-full py-2 px-3 rounded-l-md focus:outline-none"
             placeholder="Search for products..."
           />
-          <button className="bg-[#FEBD69] hover:bg-[#fcb252] py-2 px-4 rounded-r-md">
+          <button
+            className="bg-[#FEBD69] hover:bg-[#fcb252] py-2 px-4 rounded-r-md"
+            onClick={() => Router.push("/search")}
+          >
             <AiOutlineSearch size={25} />
           </button>
         </div>

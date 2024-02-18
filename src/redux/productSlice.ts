@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-interface productData {
+interface ProductData {
+  quantity?: number;
   productid: number;
   productimage: string;
   rating: number;
@@ -10,13 +11,13 @@ interface productData {
   heading: string;
 }
 
-const initialState: productData[] = [];
+const initialState: ProductData[] = [];
 
 const productSlice = createSlice({
   name: "product",
   initialState,
   reducers: {
-    setProductData: (state, actions: PayloadAction<productData[]>) => {
+    setProductData: (state, actions: PayloadAction<ProductData[]>) => {
       return actions.payload;
     },
   },
