@@ -32,6 +32,7 @@ const Header = () => {
   );
 
   const [productQty, setProductQty] = useState<number>();
+  const [searchQuery, setSearchQuery] = useState<string>("");
 
   async function cartDataFetch() {
     const { data, error } = await supabase
@@ -107,10 +108,14 @@ const Header = () => {
             type="text"
             className="w-full py-2 px-3 rounded-l-md focus:outline-none"
             placeholder="Search for products..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
           />
           <button
             className="bg-[#FEBD69] hover:bg-[#fcb252] py-2 px-4 rounded-r-md"
-            onClick={() => Router.push("/search")}
+            onClick={() =>
+              searchQuery.length >= 3 && Router.push(`/search?q=${searchQuery}`)
+            }
           >
             <AiOutlineSearch size={25} />
           </button>
