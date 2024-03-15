@@ -1,14 +1,17 @@
 import React from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 interface cardInfo {
   heading: string;
   image: string;
   url: string;
   urlText: string;
+  category: string;
 }
 
-function ProductsCard({ heading, image, url, urlText }: cardInfo) {
+function ProductsCard({ heading, image, url, urlText, category }: cardInfo) {
+  const Router = useRouter();
   return (
     <div className="w-[19.5rem] h-[26rem] bg-white p-5 overflow-hidden">
       <div className="font-bold text-xl">{heading}</div>
@@ -25,9 +28,12 @@ function ProductsCard({ heading, image, url, urlText }: cardInfo) {
         />
       </div>
       <div className="pb-4 text-xs font-medium">
-        <Link href={url} className="text-[#007185] hover:text-orange-400">
+        <span
+          onClick={() => Router.push(`/search?category=${category}`)}
+          className="text-[#007185] hover:text-orange-400"
+        >
           {urlText}
-        </Link>
+        </span>
       </div>
     </div>
   );

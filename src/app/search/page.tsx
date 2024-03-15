@@ -24,18 +24,31 @@ function Search() {
   const Router = useRouter();
   const searchParams = useSearchParams();
   const searchQuery = searchParams?.get("q");
+  const category = searchParams?.get("category");
 
   async function searchedProducts() {
     setLoading(true);
-    const { data, error } = await supabase
-      .from("products")
-      .select("*")
-      .ilike("heading", `%${searchQuery}%`);
-
-    if (error) {
-      console.error("Error fetching search results:", error);
-    } else {
-      setSearchResults([...data]);
+    if (searchQuery) {
+      const { data, error } = await supabase
+        .from("products")
+        .select("*")
+        .ilike("heading", `%${searchQuery}%`);
+      if (error) {
+        console.error("Error fetching search results:", error);
+      } else {
+        setSearchResults([...data]);
+      }
+    }
+    if (category) {
+      const { data, error } = await supabase
+        .from("products")
+        .select("*")
+        .eq("category", category);
+      if (error) {
+        console.error("Error fetching search results:", error);
+      } else {
+        setSearchResults([...data]);
+      }
     }
     setLoading(false);
   }
@@ -104,7 +117,9 @@ function Search() {
             style={{ boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)" }}
           >
             {searchResults.length} results for
-            <b className="text-[#C55400] ml-1">&quot;{searchQuery}&quot;</b>
+            <b className="text-[#C55400] ml-1">
+              &quot;{searchQuery ? searchQuery : category}&quot;
+            </b>
           </div>
           {searchResults.length > 0 ? (
             <div className="flex flex-col p-2">

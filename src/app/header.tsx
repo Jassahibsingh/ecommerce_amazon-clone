@@ -110,6 +110,11 @@ const Header = () => {
             placeholder="Search for products..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
+            onKeyDown={(e) => {
+              e.key === "Enter" &&
+                searchQuery.length >= 3 &&
+                Router.push(`/search?q=${searchQuery}`);
+            }}
           />
           <button
             className="bg-[#FEBD69] hover:bg-[#fcb252] py-2 px-4 rounded-r-md"

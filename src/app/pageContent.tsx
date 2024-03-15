@@ -243,6 +243,7 @@ function PageContent() {
                 image={e.image}
                 url={e.url}
                 urlText={e.urltext}
+                category={e.category}
               />
             ))}
           </div>
@@ -266,6 +267,7 @@ function PageContent() {
                 image={e.image}
                 url={e.url}
                 urlText={e.urltext}
+                category={e.category}
               />
             ))}
           </div>
@@ -283,6 +285,7 @@ function PageContent() {
                 image={e.image}
                 url={e.url}
                 urlText={e.urltext}
+                category={e.category}
               />
             ))}
           </div>
